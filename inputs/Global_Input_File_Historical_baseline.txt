@@ -1,0 +1,6 @@
+RColSim_WD	"C:/Users/keyva/OneDrive/Documents/papers/RColSim/August 2021/For_Keyvan/Step_5/RColSim"
+Flow_Input_File	"C:/Users/keyva/OneDrive/Documents/papers/RColSim/August 2021/For_Keyvan/Step_5/RColSim/inputs/Supply_to_RColSim/ToRColSim_scenario_baseline_with_curtailment.txt"
+Output_Folder	"C:/Users/keyva/OneDrive/Documents/papers/RColSim/August 2021/For_Keyvan/Step_5/RColSim/output"
+simulation_start_year	1979
+simulation_end_date	"2015-09-27"
+
