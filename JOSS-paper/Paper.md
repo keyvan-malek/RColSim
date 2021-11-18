@@ -63,13 +63,13 @@ There are tributaries within the Columbia system that are currently excluded fro
 
 # Figures
 
-![Figure 1. Conceptual schematic of RColSim and the six major sub-basins that RColSim simulates.\label{fig:Figure-1}](Figure-1.png)
+[//]: #![Figure 1. Conceptual schematic of RColSim and the six major sub-basins that RColSim simulates.\label{fig:Figure-1}](Figure-1.png)
 
-![Figure 2.  Seasonality of system operation and rule curve selection process for operation of the Columbia River Basin. Each week one of these rule curves is selected for the operation of each dam in the CRB water system. Overall, water stored behind dams cannot be more than the flood control URCs. In terms of the minimum operation level (CRC and ORCLL), the rule curves cannot drop below the dam water level during the worst historical water supply year..\label{fig:Figure-2}](Figure-2.png)
+[//]: #![Figure 2.  Seasonality of system operation and rule curve selection process for operation of the Columbia River Basin. Each week one of these rule curves is selected for the operation of each dam in the CRB water system. Overall, water stored behind dams cannot be more than the flood control URCs. In terms of the minimum operation level (CRC and ORCLL), the rule curves cannot drop below the dam water level during the worst historical water supply year..\label{fig:Figure-2}](Figure-2.png)
 
-![Figure 3. Simulated vs. observed long-term mean change in reservoir storage by calendar month, based on weekly time step simulation for the period 1979 to 2015.\label{fig:Figure-3}](Figure-3.png)
+[//]: #![Figure 3. Simulated vs. observed long-term mean change in reservoir storage by calendar month, based on weekly time step simulation for the period 1979 to 2015.\label{fig:Figure-3}](Figure-3.png)
 
-![Table 1. Performance metrics for RColSim simulated vs. observed weekly dam outflow. These metrics include the Pearson Correlation Coefficient (r), Mean Error (ME), Kling-Gupta Efficiency (KGE), Normalized Root Mean Square of Error (NRMSE), and Volumetric Efficiency (VE).  The simulation period is August 1979 to September 2015. The table also provides information about dam location in the basin and acronyms used in RColSim to refer to each dam.\label{fig:Table-1}](Table-1.png)
+[//]: #![Table 1. Performance metrics for RColSim simulated vs. observed weekly dam outflow. These metrics include the Pearson Correlation Coefficient (r), Mean Error (ME), Kling-Gupta Efficiency (KGE), Normalized Root Mean Square of Error (NRMSE), and Volumetric Efficiency (VE).  The simulation period is August 1979 to September 2015. The table also provides information about dam location in the basin and acronyms used in RColSim to refer to each dam.\label{fig:Table-1}](Table-1.png)
 
 
 
