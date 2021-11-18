@@ -61,16 +61,4 @@ Model Limitations
 There are tributaries within the Columbia system that are currently excluded from RColSim because their water contribution relative to the overall annual flow at the Columbia River scale is negligible. Examples of these tributaries include the Yakima, Walla Walla, and Chelan river basins. RColSim also represents the upper and middle Snake River dams as two hypothetical integrated dams. While these dams do not significantly contribute to the overall water supply of the Columbia River, their absence limits our ability to explore research questions in those specific regions (e.g., the headwater of the Snake River). Therefore, future studies can more explicitly incorporate operational details of dams in those regions and enable RColSim to answer broader ranges of questions at the subbasin scale. While rule curves of Canadian dams have been updated, there are other dams that can benefit from bringing their operations up-to-date (e.g., Brownlee, Hungry Horse and other dams in the Pend Oreille River dam group), and it is our hope that future studies will undertake these kinds of modifications in an open-source environment.
 
 
-# Figures
-
-[//]: #![Figure 1. Conceptual schematic of RColSim and the six major sub-basins that RColSim simulates.\label{fig:Figure-1}](Figure-1.png)
-
-[//]: #![Figure 2.  Seasonality of system operation and rule curve selection process for operation of the Columbia River Basin. Each week one of these rule curves is selected for the operation of each dam in the CRB water system. Overall, water stored behind dams cannot be more than the flood control URCs. In terms of the minimum operation level (CRC and ORCLL), the rule curves cannot drop below the dam water level during the worst historical water supply year..\label{fig:Figure-2}](Figure-2.png)
-
-[//]: #![Figure 3. Simulated vs. observed long-term mean change in reservoir storage by calendar month, based on weekly time step simulation for the period 1979 to 2015.\label{fig:Figure-3}](Figure-3.png)
-
-[//]: #![Table 1. Performance metrics for RColSim simulated vs. observed weekly dam outflow. These metrics include the Pearson Correlation Coefficient (r), Mean Error (ME), Kling-Gupta Efficiency (KGE), Normalized Root Mean Square of Error (NRMSE), and Volumetric Efficiency (VE).  The simulation period is August 1979 to September 2015. The table also provides information about dam location in the basin and acronyms used in RColSim to refer to each dam.\label{fig:Table-1}](Table-1.png)
-
-
-
 # References
