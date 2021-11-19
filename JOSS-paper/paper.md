@@ -1,4 +1,4 @@
-﻿---
+---
 title: 'RColSim: An Open-Source Regional Water Management Model for the Columbia River Basin'
 tags:
   - R
