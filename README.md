@@ -4,12 +4,6 @@
 
 The Columbia Simulation model written in R programing language (RColSim) is an open source river system model that simulates the operation of dams and water systems in the Columbia River Basin (CRB). RColSim simulates more than 30 dams located across different parts of the CRB, and takes into account various dam-specific and system-wide operation objectives. These objectives include flood protection, hydropower generation, as well as meeting irrigation and environmental protection demands of the CRB.
 
-﻿# RColSim
- 
-<img style="float: right;" src="RColSim-logo.png" width="200">
-
-The Columbia Simulation model written in R programing language (RColSim) is an open source river system model that simulates the operation of dams and water systems in the Columbia River Basin (CRB). RColSim simulates more than 30 dams located across different parts of the CRB, and takes into account various dam-specific and system-wide operation objectives. These objectives include flood protection, hydropower generation, as well as meeting irrigation and environmental protection demands of the CRB.
-
 ## Contacts: 
 Keyvan Malek (keyvanmalek@gmail.com), Matthew Yourek (matthew.yourek@wsu.edu), and Jennifer Adam (jcadam@wsu.edu)
 
@@ -27,41 +21,54 @@ The current version of RColSim works at a weekly time step. Therefore, the strea
 The unregulated water supply input columns are designated by the “PriVIC” prefix. These flows should be routed to each of the dams if you are including your own water supply data. Alternatively, the no-regulation, no-irrigation (NRNI) dataset from the Bonneville Power Administration (BPA) can be used.
 Weekly surface water demands (withdrawals for municipal water and irrigation, excluding conveyance losses) are also included in the RColSim input file. The aggregation area for these demands corresponds with the drainage areas between the dam indicated after the “DemVIC” prefix and the nearest upstream dam. The water demand in the DemVIC columns was calculated from VIC-CropSyst simulated irrigation demands, not including conveyance losses, as well as surface water municipal demands where those data were available.  The model subtracts water demand from naturalized flow in the incremental drainage area between each dam and its nearest upstream neighbors. These drainage areas are shown in Figure 1. If the user wishes to run RColSim with naturalized flows (demands already removed), the demand columns in the input file need to be replaced with zeros to avoid double-counting water demand. 
 
-<img style="float: right;" src="JOSS-paper/RColSim_dams.png" width="400">
-<center>*Incremental drainage areas for each dam represented in RColSim.*</center>
+<p align="center">
+
+<img style="float: right;" src="JOSS-paper/RColSim_dams.png" width="700">
+*Incremental drainage areas for each dam represented in RColSim.*
+
+</p>
 
 Inflow to a downstream dam is calculated as the sum of outflow from immediate upstream dams plus incremental supply with demands removed (Eq. 1). Incremental supply is the difference between supply to a downstream dam and supply to all immediately upstream dams. Water demand corresponds with the same drainage area as incremental supply and is included in the input file. The orientation of dams represented in RColSim is shown in Table 1.
 
 ```math
-Inflow_Downstream=Flow_Incremental + Demand_Incremental + Outflow_Upstream
+Inflow_{Downstream}=Flow_{Incremental} + Demand_{Incremental} + Outflow_{Upstream}
 ```
+<p align="center">
 
-<img style="float: right;" src="JOSS-paper/RColSim_Inflow_points.png" width="400">
-<center>*Upstream-downstream orientation of dams in RColSim.*</center>
+<img style="float: right;" src="JOSS-paper/RColSim_Inflow_points.png" width="700">
+*Upstream-downstream orientation of dams in RColSim.* 
+
+</p>
 
 ### 3-	Update the Global Input File 
 A global input file exists in the “RColSim/inputs” folder which needs to be updated. The current file is called “Global_Input_File_Historical_baseline”, however, users can update the name and address of this file and correct line 36 of the “RColSim.R” file accordingly. The current global input file can be found here: “RColSim/inputs/Global_Input_File_Historical_baseline.txt”
 
 The global input file has the following values:
 -	**RColSim_WD**
- RColSim working directory indicates where the main RColSim model is located.
  
--	**Flow_Input_File**
+RColSim working directory indicates where the main RColSim model is located.
+ 
+-	**Flow_Input_File: **
+
 Input file to RColSim.
 
 -	**Output_Folder**
+
 The folder where program stores the output files.
 
 -	**simulation_start_year**
+
 The year that simulation starts. The start month cannot be specified because RColSim has to start from August when operation year starts.
 
 -	**simulation_end_date**
+
 The date that simulation ends. Unlike start year, this value has to be an actual date.
 
 -	**input_start_date**
 Here, the model user specifies the start date of RColSim input file.
 
 -	**input_end_date**
+
 End date of RColSim input file.
 
 ### 4- Other Model Inputs
