@@ -24,18 +24,20 @@ Weekly surface water demands (withdrawals for municipal water and irrigation, ex
 <p align="center">
 
 <img style="float: right;" src="JOSS-paper/RColSim_dams.png" width="700">
+
 *Incremental drainage areas for each dam represented in RColSim.*
 
 </p>
 
 Inflow to a downstream dam is calculated as the sum of outflow from immediate upstream dams plus incremental supply with demands removed (Eq. 1). Incremental supply is the difference between supply to a downstream dam and supply to all immediately upstream dams. Water demand corresponds with the same drainage area as incremental supply and is included in the input file. The orientation of dams represented in RColSim is shown in Table 1.
 
-```math
-Inflow_{Downstream}=Flow_{Incremental} + Demand_{Incremental} + Outflow_{Upstream}
-```
+
+$$Inflow_{downstream}=Flow_{incremental} + Demand_{incremental} + \sum{Outflow_{upstream}}$$
+
 <p align="center">
 
 <img style="float: right;" src="JOSS-paper/RColSim_Inflow_points.png" width="700">
+
 *Upstream-downstream orientation of dams in RColSim.* 
 
 </p>
@@ -44,32 +46,27 @@ Inflow_{Downstream}=Flow_{Incremental} + Demand_{Incremental} + Outflow_{Upstrea
 A global input file exists in the “RColSim/inputs” folder which needs to be updated. The current file is called “Global_Input_File_Historical_baseline”, however, users can update the name and address of this file and correct line 36 of the “RColSim.R” file accordingly. The current global input file can be found here: “RColSim/inputs/Global_Input_File_Historical_baseline.txt”
 
 The global input file has the following values:
+
 -	**RColSim_WD**
- 
 RColSim working directory indicates where the main RColSim model is located.
  
--	**Flow_Input_File: **
-
+-	**Flow_Input_File**
 Input file to RColSim.
 
 -	**Output_Folder**
-
 The folder where program stores the output files.
 
 -	**simulation_start_year**
-
 The year that simulation starts. The start month cannot be specified because RColSim has to start from August when operation year starts.
 
 -	**simulation_end_date**
-
 The date that simulation ends. Unlike start year, this value has to be an actual date.
 
 -	**input_start_date**
 Here, the model user specifies the start date of RColSim input file.
 
 -	**input_end_date**
-
 End date of RColSim input file.
 
 ### 4- Other Model Inputs
-The users that are only interested in running the baseline scenarios of RColSim do not need to adjust any other input files. However, there are some modeling options that can be specified in “RColSim/Switches.R”. For example, users can specify if they want to conduct the simulation under the perfect forecast condition or predefined refill curves by setting “PfctForecast_Refill_Targ” or “SQuo_Refill_Targ” values to 1. There are also additional inputs that can be potentially changed for specific purposes. Examples of these inputs include rule curves that are available in “RColSim/default_rule_curves”. 
+The users that are only interested in running the baseline scenarios of RColSim do not need to adjust any other input files. However, there are some modeling options that can be specified in “Switches.R”. For example, users can specify if they want to conduct the simulation under the perfect forecast condition or predefined refill curves by setting “PfctForecast_Refill_Targ” or “SQuo_Refill_Targ” values to 1. There are also additional inputs that can be potentially changed for specific purposes. Examples of these inputs include rule curves that are available in “default_rule_curves”. 
