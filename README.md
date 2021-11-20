@@ -32,7 +32,11 @@ Weekly surface water demands (withdrawals for municipal water and irrigation, ex
 Inflow to a downstream dam is calculated as the sum of outflow from immediate upstream dams plus incremental supply with demands removed (Eq. 1). Incremental supply is the difference between supply to a downstream dam and supply to all immediately upstream dams. Water demand corresponds with the same drainage area as incremental supply and is included in the input file. The orientation of dams represented in RColSim is shown in Table 1.
 
 
-$$Inflow_{downstream}=Flow_{incremental} + Demand_{incremental} + \sum{Outflow_{upstream}}$$
+$$
+
+Inflow_{downstream}=Flow_{incremental} + Demand_{incremental} + \sum{Outflow_{upstream}}
+
+$$
 
 <p align="center">
 
