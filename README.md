@@ -25,7 +25,7 @@ Weekly surface water demands (withdrawals for municipal water and irrigation, ex
 
 <img style="float: right;" src="JOSS-paper/RColSim_dams.png" width="700">
 
-*Incremental drainage areas for each dam represented in RColSim.*
+*Figure 1 - Incremental drainage areas for each dam represented in RColSim.*
 
 </p>
 
@@ -34,7 +34,7 @@ Inflow to a downstream dam is calculated as the sum of outflow from immediate up
 
 ```math
 
-Downstream Inflow = Incremental Flow + Incremental Demand + Sum of Upstream Outflow
+Downstream Inflow = Incremental Flow - Incremental Demand + Sum of Upstream Outflow
 
 ```
 
@@ -42,7 +42,7 @@ Downstream Inflow = Incremental Flow + Incremental Demand + Sum of Upstream Outf
 
 <img style="float: right;" src="JOSS-paper/RColSim_Inflow_points.png" width="700">
 
-*Upstream-downstream orientation of dams in RColSim.* 
+*Table 1 - Upstream-downstream orientation of dams in RColSim.* 
 
 </p>
 
@@ -51,25 +51,25 @@ A global input file exists in the “RColSim/inputs” folder which needs to be 
 
 The global input file has the following values:
 
--	**RColSim_WD**
+-	**RColSim_WD** : 
 RColSim working directory indicates where the main RColSim model is located.
  
--	**Flow_Input_File**
+-	**Flow_Input_File** : 
 Input file to RColSim.
 
--	**Output_Folder**
+-	**Output_Folder** : 
 The folder where program stores the output files.
 
--	**simulation_start_year**
+-	**simulation_start_year** : 
 The year that simulation starts. The start month cannot be specified because RColSim has to start from August when operation year starts.
 
--	**simulation_end_date**
+-	**simulation_end_date** : 
 The date that simulation ends. Unlike start year, this value has to be an actual date.
 
--	**input_start_date**
+-	**input_start_date** : 
 Here, the model user specifies the start date of RColSim input file.
 
--	**input_end_date**
+-	**input_end_date** : 
 End date of RColSim input file.
 
 ### 4- Other Model Inputs
