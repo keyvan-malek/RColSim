@@ -25,24 +25,24 @@ Weekly surface water demands (withdrawals for municipal water and irrigation, ex
 
 <img style="float: right;" src="JOSS-paper/RColSim_dams.png" width="700">
 
-*Figure 1 - Incremental drainage areas for each dam represented in RColSim.*
+*Incremental drainage areas for each dam represented in RColSim.*
 
 </p>
 
 Inflow to a downstream dam is calculated as the sum of outflow from immediate upstream dams plus incremental supply with demands removed (Eq. 1). Incremental supply is the difference between supply to a downstream dam and supply to all immediately upstream dams. Water demand corresponds with the same drainage area as incremental supply and is included in the input file. The orientation of dams represented in RColSim is shown in Table 1.
 
 
-```math
+$$
 
-Downstream Inflow = Incremental Flow - Incremental Demand + Sum of Upstream Outflow
+Inflow_{downstream} = Flow_{incremental} + Demand_{incremental} + \sum{Outflow_{upstream}}
 
-```
+$$
 
 <p align="center">
 
 <img style="float: right;" src="JOSS-paper/RColSim_Inflow_points.png" width="700">
 
-*Table 1 - Upstream-downstream orientation of dams in RColSim.* 
+*Upstream-downstream orientation of dams in RColSim.* 
 
 </p>
 
@@ -74,3 +74,12 @@ End date of RColSim input file.
 
 ### 4- Other Model Inputs
 The users that are only interested in running the baseline scenarios of RColSim do not need to adjust any other input files. However, there are some modeling options that can be specified in “Switches.R”. For example, users can specify if they want to conduct the simulation under the perfect forecast condition or predefined refill curves by setting “PfctForecast_Refill_Targ” or “SQuo_Refill_Targ” values to 1. There are also additional inputs that can be potentially changed for specific purposes. Examples of these inputs include rule curves that are available in “default_rule_curves”. 
+
+
+## License
+
+```
+	License: GNU General Public License version 3
+	
+	
+```
