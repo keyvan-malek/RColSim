@@ -23,7 +23,7 @@ Weekly surface water demands (withdrawals for municipal water and irrigation, ex
 
 <p align="center">
 
-<img style="float: right;" src="JOSS-paper/RColSim_dams.png" width="700">
+<img style="float: right;" src="paper/RColSim_dams.png" width="700">
 
 *Incremental drainage areas for each dam represented in RColSim.*
 
@@ -40,7 +40,7 @@ $$
 
 <p align="center">
 
-<img style="float: right;" src="JOSS-paper/RColSim_Inflow_points.png" width="700">
+<img style="float: right;" src="paper/RColSim_Inflow_points.png" width="700">
 
 *Upstream-downstream orientation of dams in RColSim.* 
 
