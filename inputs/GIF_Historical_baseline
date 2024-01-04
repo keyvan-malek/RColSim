@@ -1,0 +1,5 @@
+RColSim_WD ~/RColSim_v1
+Flow_Input_File ~/RColSim_v1/inputs/ToRColSim_scenario_baseline.txt
+Output_Folder ~/RColSim_v1/output/Historical_baseline/
+simulation_start_year 1979
+simulation_end_date 2007-09-30
