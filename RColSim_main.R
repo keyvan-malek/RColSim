@@ -27,20 +27,8 @@
 #                                                    Read the global input file
 #                                                            
 # -------------------------------------------------------------------------------------------------------------------------------------------
-                                                            
-
-
-#project_name <- commandArgs()[6]
-#scr <- commandArgs()[7]
-#run_type <- commandArgs()[8]
-if (length(ls()) > 0) { rm(list=ls()) }
-
-
-scr = "Historical_baseline"
-run_type <- "supply_and_demand"
-
-#print(paste(run_type, scr, project_name))
-# -------- Read the global input file
+                                           
+scr = "Historical_baseline" 
 print(paste0("Now doing scenario: ", scr))
 GlobalFile <- read.table(paste0("~/RColSim_v1/inputs/GIF_", scr), stringsAsFactors=F)
 
@@ -96,7 +84,7 @@ source("PMFs.R")
 OutputFolder<-GlobalFile[3,2]
 
 ###### READ INPUT DATA FOR EACH WEEK
-source("~/RColSim/VIC_Data_new.R")
+source("VIC_Data.R")
 
 # ----------------- New simulation?
 #------------------- Attention!!!!!!!!!!!!!!
@@ -153,7 +141,7 @@ for (I_Week in 1:N_of_TimeSteps){
 		for (var in reset_variables) {
 			assign(var, -9999)
 		}
-		#rm(CLCombSup_c)
+		
 		MIRelease_c <- MIRelease()
 		dams_in$MICAA[week_counter] <- MIInflow()
 		dams_out$MICAA[week_counter] <- MIOutflow()
@@ -279,22 +267,22 @@ for (I_Week in 1:N_of_TimeSteps){
 		JLRelease_c <- JLRelease()
 		dams_in$JLAKE[week_counter] <- JLInflow()
 		dams_out$JLAKE[week_counter] <- JLOutflow()
-		flood_curve_df$JLAKE[week_counter] <- JLFloodCurve()
+		#flood_curve_df$JLAKE[week_counter] <- JLFloodCurve()
 
 		PALRelease_c <- PALRelease()
 		dams_in$PALIS[week_counter] <- PALInflow()
 		dams_out$PALIS[week_counter] <- PALOutflow()
-		flood_curve_df$PALIS[week_counter] <- PALFloodCurve()
+		#flood_curve_df$PALIS[week_counter] <- PALFloodCurve()
 
 		IPRelease_c <- IPRelease()
 		dams_in$IPARK[week_counter] <- IPInflow()
 		dams_out$IPARK[week_counter] <- IPOutflow()
-		flood_curve_df$IPARK[week_counter] <- IPFloodCurve()
+		#flood_curve_df$IPARK[week_counter] <- IPFloodCurve()
 
 		RIRRelease_c <- RIRRelease()
 		dams_in$RIRDM[week_counter] <- RIRInflow()
 		dams_out$RIRDM[week_counter] <- RIROutflow()
-		flood_curve_df$RIRDM[week_counter] <- RIRFloodCurve()
+		#flood_curve_df$RIRDM[week_counter] <- RIRFloodCurve()
 
 		AMRelease_c <- AMRelease()
 		dams_in$AMERI[week_counter] <- AMInflow()
@@ -310,12 +298,12 @@ for (I_Week in 1:N_of_TimeSteps){
 		BoiseRelease_c <- BoiseRelease()
 		dams_in$BOISE[week_counter] <- BoiseInflow()
 		dams_out$BOISE[week_counter] <- BoiseOutflow()
-		flood_curve_df$BOISE[week_counter] <- BoiseFloodCurve()
+		#flood_curve_df$BOISE[week_counter] <- BoiseFloodCurve()
 
 		PayetteRelease_c <- PayetteRelease()
 		dams_in$PAYHS[week_counter] <- PayetteInflow()
 		dams_out$PAYHS[week_counter] <- PayetteOutflow()
-		flood_curve_df$PAYHS[week_counter] <- PayetteFloodCurve()
+		#flood_curve_df$PAYHS[week_counter] <- PayetteFloodCurve()
 
 		OWYRelease_c <- OWYRelease()
 		dams_in$OWYHE[week_counter] <- OWYInflow()
@@ -325,8 +313,8 @@ for (I_Week in 1:N_of_TimeSteps){
 		BRRelease_c <- BRRelease()
 		dams_in$BROWN[week_counter] <- BRInflow()
 		dams_out$BROWN[week_counter] <- BROutflow()
-		flood_curve_df$BROWN[week_counter] <- BRFloodCurve()
-		energy_curve_df$BROWN[week_counter] <- BRECC()
+		#flood_curve_df$BROWN[week_counter] <- BRFloodCurve()
+		#energy_curve_df$BROWN[week_counter] <- BRECC()
 
 		dams_in$OXBOW[week_counter] <- OXIn()
 		dams_out$OXBOW[week_counter] <- OXOut()
@@ -337,8 +325,8 @@ for (I_Week in 1:N_of_TimeSteps){
 		DWRelease_c <- DWRelease()
 		dams_in$DWORS[week_counter] <- DWInflow()
 		dams_out$DWORS[week_counter] <- DWOutflow()
-		flood_curve_df$DWORS[week_counter] <- DWFloodCurve()
-		energy_curve_df$DWORS[week_counter] <- DWECC()
+		#flood_curve_df$DWORS[week_counter] <- DWFloodCurve()
+		#energy_curve_df$DWORS[week_counter] <- DWECC()
 
 		dams_in$LGRAN[week_counter] <- LGIn()
 		dams_out$LGRAN[week_counter] <- LGOut()	
@@ -358,7 +346,7 @@ for (I_Week in 1:N_of_TimeSteps){
 			mainstem_curtailments$MCNAR[week_counter] <- MCNCurtail()
 			mainstem_shortfall$MCNAR[week_counter] <- MCNInstreamShortfall()
 		}
-		BiOp$MCNAR[week_counter] <- McNaryFlowTarget()
+		#BiOp$MCNAR[week_counter] <- McNaryFlowTarget()
 
 		dams_in$JDAYY[week_counter] <- JDIn()
 		dams_out$JDAYY[week_counter] <- JDOut()
@@ -370,7 +358,7 @@ for (I_Week in 1:N_of_TimeSteps){
 		PELRelease_c <- PELRelease()
 		dams_in$PELTO[week_counter] <- PELInflow()
 		dams_out$PELTO[week_counter] <- PELOutflow()
-		flood_curve_df$PELTO[week_counter] <- PELFloodCurve()
+		#flood_curve_df$PELTO[week_counter] <- PELFloodCurve()
 
 		dams_in$DALLE[week_counter] <- DAIn()
 		dams_out$DALLE[week_counter] <- DAOut()
@@ -381,7 +369,7 @@ for (I_Week in 1:N_of_TimeSteps){
 
 		dams_in$BONNE[week_counter] <- BONIn()
 		dams_out$BONNE[week_counter] <- BONOut()
-		BiOp$BONNE[week_counter] <- BonnevilleFlowTarget()
+		#BiOp$BONNE[week_counter] <- BonnevilleFlowTarget()
 		water_df$TotalDamProtectExcess[week_counter] <- TotalDamProtectExcess_c
     
 		##################################################################################################################
@@ -411,9 +399,7 @@ for (I_Week in 1:N_of_TimeSteps){
 		MOP_df$DallesFlood[week_counter] <- DallesFloodMOP() # The Dalles flood protection metric
 		MOP_df$IHNav[week_counter] <- IHNavMOP() # Ice Harbor navigation metric
 		MOP_df$BonnevillFlow[week_counter] <- BonnevilleFlowMOP() # Bonneville flow shortfall
-		MOP_df$BelowFCC[week_counter] <- BelowFCC() # Excess flood storage space
-		MOP_df$FirmEnergySales[week_counter] <- FirmEnergySales()
-		#MOP_df$NonFirmSpotSales[week_counter] <- NonFirmSpotSales()
+		MOP_df$ExtraSpace[week_counter] <- ExtraSpace() # Excess flood storage space
 		MOP_df$TotalSysEnergy[week_counter] <- MaxSystemEnergy_c
 		
 		print(paste0("Simulation date = ", as.Date(date_hist_sim[week_counter,1])))
@@ -427,10 +413,6 @@ for (I_Week in 1:N_of_TimeSteps){
 		write.table(cbind(date_hist_sim[week_counter,], MOP_df[week_counter,]), paste0(OutputFolder, "/MOP_df.txt"), row.names=F, col.names=F, append=T)
 		write.table(cbind(date_hist_sim[week_counter,], water_df[week_counter,]), paste0(OutputFolder, "/water.txt"), row.names=F, col.names=F, append=T)
 		write.table(cbind(date_hist_sim[week_counter,], energy_df[week_counter,]), paste0(OutputFolder, "/energy.txt"), row.names=F, col.names=F, append=T)
-		write.table(cbind(date_hist_sim[week_counter,], BiOp[week_counter,]), paste0(OutputFolder, "/BiOp_flow.txt"), row.names=F, col.names=F, append=T)
-		write.table(cbind(date_hist_sim[week_counter,], flood_curve_df[week_counter,]), paste0(OutputFolder, "/flood_curve.txt"), row.names=F, col.names=F, append=T)
-		write.table(cbind(date_hist_sim[week_counter,], energy_curve_df[week_counter,]), paste0(OutputFolder, "/energy_content_curve.txt"), row.names=F, col.names=F, append=T)
-		write.table(cbind(date_hist_sim[week_counter,], GC_VDL_df[week_counter,]), paste0(OutputFolder, "/GC_variable_draft.txt"), row.names=F, col.names=F, append=T)
 		
 		if (track_curtailment == week_counter) {
 			write.table(cbind(date_hist_sim[week_counter,], mainstem_shortfall[week_counter,]), paste0(OutputFolder, "/mainstem_shortfall.txt"), row.names=F, col.names=F, append=T)

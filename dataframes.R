@@ -23,12 +23,15 @@ names(mainstem_shortfall) = c("CHIEF", "WELLS", "ROCKY", "RISLA", "WANAP", "PRIR
 
 MOP_df = data.frame(matrix(nrow=N_of_TimeSteps, ncol=14))
 names(MOP_df) = c("FirmEnergy", "NonFirmEnergy", "ColFallsFlow", "LowerGraniteFlow", "VernitaBarFlow", "McNaryFlow",
-	"GCRec", "DallesFlood", "IHNav", "BonnevillFlow", "BelowFCC", "FirmEnergySales", "NonFirmSpotSales", "TotalSysEnergy")
+	"GCRec", "DallesFlood", "IHNav", "BonnevillFlow", "ExtraSpace", "FirmEnergySales", "NonFirmSpotSales", "TotalSysEnergy")
 
 reservoir_vol_df = data.frame(matrix(nrow=N_of_TimeSteps, ncol=22))
 names(reservoir_vol_df) = c("MICAA", "ARROW", "DUNCA", "CORRA", "LIBBY", "FLASF", "GCOUL", "DWORS", "BROWN", "FLAPO", 
 	"ALBEN", "CHELA", "JLAKE", "PALIS", "IPARK", "RIRDM", "AMERI", "MINAD", "BOISE", "PAYHS", "OWYHE", "PELTO")
 
+
+
+############ DO NOT DELETE THESE DATAFRAMES !!!! #####################
 energy_df = data.frame(matrix(nrow=N_of_TimeSteps, ncol=6))
 names(energy_df) = c("TotalEnergyContent", "TotalECCEnergyContent", "FirmEnergyDeficit",
 "TotalCoordPreEnergy", "TotalNFEnergyContent", "NonFirmEnergyDeficit")
@@ -38,15 +41,4 @@ names(water_df) = c("TotalFloodSpace", "TotalRelReducReq", "TotalMcNarySharedWat
 	"DWLGSup", "DWFirmEngSup", "GCFirmEngSup", "TotalEnergySup", "UpstreamFloodEvacGC", "TotalFloodRelSharedWater", "GCMinFloodRelReq", "ARMinFloodRelReq",
 	"ControlledFlow", "BRIn", "GCIn")
 
-BiOp = data.frame(matrix(nrow=N_of_TimeSteps, ncol=2))
-names(BiOp) = c("MCNAR", "BONNE")
-
-flood_curve_df = data.frame(matrix(nrow=N_of_TimeSteps, ncol=20))
-names(flood_curve_df) = c("MICAA", "ARROW", "DUNCA", "CORRA", "LIBBY", "FLASF", "GCOUL", "DWORS", "BROWN", "FLAPO", 
-	"ALBEN", "CHELA", "JLAKE", "PALIS", "IPARK", "RIRDM", "BOISE", "PAYHS", "OWYHE", "PELTO")
-	
-energy_curve_df = data.frame(matrix(nrow=N_of_TimeSteps, ncol=11))
-names(energy_curve_df) = c("MICAA", "ARROW", "DUNCA", "CORRA", "LIBBY", "FLASF", "GCOUL", "DWORS", "BROWN", "FLAPO", "ALBEN")
-
-GC_VDL_df = data.frame(matrix(nrow=N_of_TimeSteps, ncol=1))
-names(GC_VDL_df) = "GCOUL"
+####################################################################################

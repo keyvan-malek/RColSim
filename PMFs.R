@@ -181,11 +181,11 @@ SumFloodTarget <- function() { # Target storage for dams to meet flood protectio
 	SumFloodTarget_o <- ARFloodCurve() + DUFloodCurve() + DWFloodCurve() + GCFloodCurve() + HHFloodCurve() + LBFloodCurve() + MIFloodCurve() + BRFloodCurve() + CLFloodCurve() + KEFloodCurve() + AFFloodCurve()
 	return(SumFloodTarget_o)
 }
-BelowFCC <- function() { # Excess storage space
+ExtraSpace <- function() { # Excess storage space
 	if (TotalSysStorage() < SumFloodTarget() * (1 - SensitivityFraction)) {
-		BelowFCC_o <- SumFloodTarget() - TotalSysStorage()
+		ExtraSpace_o <- SumFloodTarget() - TotalSysStorage()
 	} else {
-		BelowFCC_o <- 0
+		ExtraSpace_o <- 0
 	}
-	return(BelowFCC_o)
+	return(ExtraSpace_o)
 }
