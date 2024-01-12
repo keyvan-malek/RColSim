@@ -458,7 +458,7 @@ MIFirmEngSupReq <- function() { # Required release from Mica to meet firm energy
 	return(MIFirmEngSupReq_o)
 }
 MINonFirmSupReq <- function() { # Required release from Mica to meet non-firm energy target (AF/wk)
-	if (NonFirmEnergySw == 1) { # Default = 1
+	if (NonFirmEnergySw() == 1) { # Default = 1
 		MINonFirmSupReq_o <- min(MIPenLimit(), (MIFirmEngSup() + MINonFirmEngSup()) / (MWhr_per_ftAcFt * (MINetHead() + REVNetHead() + TotalGCHead()) * MICombEfficiency))
 	} else {
 		MINonFirmSupReq_o <- 0
@@ -925,7 +925,7 @@ ARFirmEngSupReq <- function() {
 	return(ARFirmEngSupReq_o)
 }
 ARNonFirmSupReq <- function() {
-	if (NonFirmEnergySw == 1) {
+	if (NonFirmEnergySw() == 1) {
 		ARNonFirmSupReq_o <- min(ARPenLimit(), (ARFirmEngSup() + ARNonFirmEngSup()) / (MWhr_per_ftAcFt * TotalGCHead() * ARCombEfficiency))
 	} else {
 		ARNonFirmSupReq_o <- 0
@@ -1275,7 +1275,7 @@ DUFirmEngSupReq <- function() {
 	return(DUFirmEngSupReq_o)
 }
 DUNonFirmSupReq <- function() {
-	if (NonFirmEnergySw == 1) {
+	if (NonFirmEnergySw() == 1) {
 		DUNonFirmSupReq_o <- (DUFirmEngSup() + DUNonFirmEngSup()) / (MWhr_per_ftAcFt * TotalGCHead() * DUCombEfficiency)	
 	} else {
 		DUNonFirmSupReq_o <- 0
@@ -1629,7 +1629,7 @@ LBFirmEngSupReq <- function() {
 	return(LBFirmEngSupReq_o)
 }
 LBNonFirmEngSupReq <- function() {
-	if (NonFirmEnergySw == 1) {
+	if (NonFirmEnergySw() == 1) {
 		LBNonFirmEngSupReq_o <- min(LBPenLimit(), (LBFirmEngSup() + LBNonFirmEngSup()) / (MWhr_per_ftAcFt * (LBNetHead() + LBDownStreamHead()) * LBCombEfficiency))
 	} else {
 		LBNonFirmEngSupReq_o <- 0
@@ -1903,7 +1903,7 @@ CLFirmEngSupReq <- function() {
 	return(CLFirmEngSupReq_o)
 }
 CLNonFirmSupReq <- function() { 
-	if (NonFirmEnergySw == 1) { 
+	if (NonFirmEnergySw() == 1) { 
 		CLNonFirmSupReq_o <- min(CLPenLimit(), (CLFirmEngSup() + CLNonFirmEngSup()) / (MWhr_per_ftAcFt * (CLNetHead() + CLDownStreamHead()) * CLCombEfficiency))
 	} else {
 		CLNonFirmSupReq_o <- 0
@@ -2279,7 +2279,7 @@ HHFirmEngSupReq <- function() {
 	return(HHFirmEngSupReq_o)
 }
 HHNonFirmEngSupReq <- function() {
-	if (NonFirmEnergySw == 1) {
+	if (NonFirmEnergySw() == 1) {
 		HHNonFirmEngSupReq_o <- min(HHPenLimit(), (HHFirmEngSup() + HHNonFirmEngSup()) / (MWhr_per_ftAcFt * (HHNetHead() + HHDownStreamHead()) * HHCombEfficiency))
 	} else {
 		HHNonFirmEngSupReq_o <- 0
@@ -2574,7 +2574,7 @@ KEFirmEngSupReq <- function() {
 	return(KEFirmEngSupReq_o)
 }
 KENonFirmSupReq <- function() { 
-	if (NonFirmEnergySw == 1) { 
+	if (NonFirmEnergySw() == 1) { 
 		KENonFirmSupReq_o <- min(KEPenLimit(), (KEFirmEngSup() + KENonFirmEngSup()) / (MWhr_per_ftAcFt * (KENetHead() + KEDownStreamHead()) * KECombEfficiency))
 	} else {
 		KENonFirmSupReq_o <- 0
@@ -2941,7 +2941,7 @@ AFFirmEngSupReq <- function() {
 	return(AFFirmEngSupReq_o)
 }
 AFNonFirmSupReq <- function() { 
-	if (NonFirmEnergySw == 1) { 
+	if (NonFirmEnergySw() == 1) { 
 		AFNonFirmSupReq_o <- min(AFPenLimit(), (AFFirmEngSup() + AFNonFirmEngSup()) / (MWhr_per_ftAcFt * (AFNetHead() + AFDownStreamHead()) * AFCombEfficiency))
 	} else {
 		AFNonFirmSupReq_o <- 0
@@ -3318,9 +3318,6 @@ GCVariableDraftLimit <- function() {
 ## The variable draft limit cannot fall below the lower limit unless required for flood control
 GC_VDL <- function() {  
 	GC_VDL_o <- min(max(GCVariableDraftLimit(), GCLowerLimit()), GCFloodCurve())
-	if (is.na(GC_VDL_df$GCOUL[week_counter])) {
-		GC_VDL_df$GCOUL[week_counter] <<- GC_VDL_o
-	}
 	return(GC_VDL_o)
 }
 
@@ -3500,7 +3497,7 @@ GCFirmEngSupReq <- function() {
 	return(GCFirmEngSupReq_o)
 }
 GCNonFirmEngSupReq <- function() {
-	if (NonFirmEnergySw == 1) {
+	if (NonFirmEnergySw() == 1) {
 		GCNonFirmEngSupReq_o <- min(GCPenLimit(), (GCFirmEngSup() + GCNonFirmEngSup()) / (MWhr_per_ftAcFt * (GCNetHead() + GCDownStreamHead()) * GCCombEfficiency))
 	} else {
 		GCNonFirmEngSupReq_o <- 0
@@ -5490,7 +5487,7 @@ BRFirmEngSupReq <- function() {
 	return(BRFirmEngSupReq_o)
 }
 BRNonFirmEngSupReq <- function() {
-	if (NonFirmEnergySw == 1) {
+	if (NonFirmEnergySw() == 1) {
 		BRNonFirmEngSupReq_o <- min(BRPenLimit(), (BRFirmEngSup() + BRNonFirmEngSup()) / (MWhr_per_ftAcFt * (BRNetHead() + BRDownStreamHead()) * BRCombEfficiency))
 	} else {
 		BRNonFirmEngSupReq_o <- 0
@@ -5879,7 +5876,7 @@ DWFirmEngSupReq <- function() {
 	return(DWFirmEngSupReq_o)
 }
 DWNonFirmEngSupReq <- function() {
-	if (NonFirmEnergySw == 1) {
+	if (NonFirmEnergySw() == 1) {
 		DWNonFirmEngSupReq_o <- min(DWPenLimit(), (DWFirmEngSup() + DWNonFirmEngSup()) / (MWhr_per_ftAcFt * (DWNetHead() + DWDownStreamHead()) * DWCombEfficiency))
 	} else {
 		DWNonFirmEngSupReq_o <- 0

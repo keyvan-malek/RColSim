@@ -41,7 +41,7 @@ refill_cat4 <<- 1
 #          2--Calculate the minimum of total demand and instream flow deficit 
 #          3--Do not calculate
 curtail_option <<- 3 
-track_curtailment <<- 0 # If 1, output mainstem curtailment, this slows down the code
+track_curtailment <<- 0 # If 1, output mainstem curtailment
 
 # Fraction of full pool storage to initialize reservoirs
 ResInitFractionFull <<- 1 

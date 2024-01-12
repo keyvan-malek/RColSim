@@ -30,43 +30,10 @@ reservoir_vol_df$PELTO[1] <- Pelton()
 
 ### Estimated combined efficiency of turbines
 
-AFCombEfficiency <<- 0.8
-ARCombEfficiency <<- 0.8
-BONCombEfficiency <<- 0.8
-BDCombEfficiency <<- 0.8
-BCCombEfficiency <<- 0.8
-BRCombEfficiency <<- 0.8
-CBCombEfficiency <<- 0.8
-CHCombEfficiency <<- 0.8
-CJCombEfficiency <<- 0.8
-CLCombEfficiency <<- 0.8
-DACombEfficiency <<- 0.8
-DUCombEfficiency <<- 0.8
-DWCombEfficiency <<- 0.8
-KECombEfficiency <<- 0.8
-HHCombEfficiency <<- 0.8
-GCCombEfficiency <<- 0.8
-HCCombEfficiency <<- 0.8
-IHCombEfficiency <<- 0.8
-JDCombEfficiency <<- 0.8
-LBCombEfficiency <<- 0.8
-LIGCombEfficiency <<- 0.8
-LGCombEfficiency <<- 0.8
-LMCombEfficiency <<- 0.8
-MCNCombEfficiency <<- 0.8
-MICombEfficiency <<- 0.8
-NOXCombEfficiency <<- 0.8
-OXCombEfficiency <<- 0.8
-PELCombEfficiency <<- 0.8
-PRCombEfficiency <<- 0.8
-RevCombEfficiency <<- 0.8
-RICombEfficiency <<- 0.8
-RRCombEfficiency <<- 0.8
-TFCombEfficiency <<- 0.8
-WACombEfficiency <<- 0.8
-WECombEfficiency <<- 0.8
+for (dam in efficiencies$ShortNM) {
+	assign(paste0(dam, "CombEfficiency"), 0.8, pos=1)
+}
 Estimated_Efficiency <<- 0.8 # Estimated combined efficiency for all plants.  This efficiency is used for estimating energy content only.
-
 
 MIRelease_c <- MIRelease()
 dams_in$MICAA[1] <- MIInflow()
@@ -83,7 +50,6 @@ HHRelease_c <- HHRelease()
 dams_in$FLASF[1] <- HHInflow()
 dams_out$FLASF[1] <- HHOutflow()
 
-#KERelease_c <- KERelease()
 dams_in$FLAPO[1] <- KEInflow()
 dams_out$FLAPO[1] <- KERelease_c
 
@@ -96,7 +62,6 @@ dams_out$NOXON[1] <- NOXOut()
 dams_in$CABIN[1] <- CBIn()
 dams_out$CABIN[1] <- CBOut()
 
-#AFRelease_c <- AFRelease()
 dams_in$ALBEN[1] <- AFInflow()
 dams_out$ALBEN[1] <- AFRelease_c
 
@@ -113,11 +78,9 @@ dams_out$LIBBY[1] <- LBOutflow()
 dams_in$BONFE[1] <- BONFIn()
 dams_out$BONFE[1] <- BONFOut()
 
-#DURelease_c <- DURelease() 
 dams_in$DUNCA[1] <- DUInflow()
 dams_out$DUNCA[1] <- DURelease_c
 
-#CLRelease_c <- CLRelease() 
 dams_in$CORRA[1] <- CLInflow()
 dams_out$CORRA[1] <- CLRelease_c
 
@@ -242,7 +205,6 @@ if (track_curtailment == 1) {
 	mainstem_curtailments$MCNAR[1] <- MCNCurtail()
 	mainstem_shortfall$MCNAR[1] <- MCNInstreamShortfall()
 }
-BiOp$MCNAR[1] <- McNaryFlowTarget()
 
 dams_in$JDAYY[1] <- JDIn()
 dams_out$JDAYY[1] <- JDOut()
@@ -264,12 +226,6 @@ if (track_curtailment == 1) {
 
 dams_in$BONNE[1] <- BONIn()
 dams_out$BONNE[1] <- BONOut()
-water_df$TotalDamProtectExcess[1] <- TotalDamProtectExcess()
-
-######### STORAGE FOR THE FIRST TIME STEP
-for (res in names(reservoir_vol_df)) {
-	reservoir_vol_df[1,res] <- reservoir_vol_df[1,res] + (dams_in[1,res] - dams_out[1,res])
-}
 
 ###### MOPs Measures Of Performance
 MOP_df$FirmEnergy[1] <- FirmEnergyMOP() # Firm energy shortfall
@@ -281,25 +237,20 @@ MOP_df$McNaryFlow[1] <- McNaryFlowMOP() # McNary flow shortfall
 MOP_df$GCRec[1] <- GCRecMOP() # Grand Coulee recreation metric
 MOP_df$DallesFlood[1] <- DallesFloodMOP() # The Dalles flood protection metric
 MOP_df$IHNav[1] <- IHNavMOP() # Ice Harbor navigation metric
-MOP_df$BonnevilleFlow[1] <- BonnevilleFlowMOP() # Bonneville flow shortfall
-MOP_df$BelowFCC[1] <- BelowFCC() # Excess flood storage space
-MOP_df$FirmEnergySales[1] <- FirmEnergySales()
-#MOP_df$NonFirmSpotSales[1] <- NonFirmSpotSales()
-MOP_df$TotalSysEnergy[1] <- MaxSystemEnergy()
+MOP_df$BonnevillFlow[1] <- BonnevilleFlowMOP() # Bonneville flow shortfall
+MOP_df$ExtraSpace[1] <- ExtraSpace() # Excess flood storage space
+MOP_df$TotalSysEnergy[1] <- MaxSystemEnergy_c
 
-write.table(cbind(date_hist_sim[1,], dams_out[1,]), paste0(OutputFolder, "/dams_out.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], dams_in[1,]), paste0(OutputFolder, "/dams_in.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], reservoir_vol_df[1,]), paste0(OutputFolder, "/reservoir_volume.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], MOP_df[1,]), paste0(OutputFolder, "/MOP_df.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], water_df[1,]), paste0(OutputFolder, "/water.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], energy_df[1,]), paste0(OutputFolder, "/energy.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], BiOp[1,]), paste0(OutputFolder, "/BiOp_flow.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], flood_curve_df[1,]), paste0(OutputFolder, "/flood_curve.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], energy_curve_df[1,]), paste0(OutputFolder, "/energy_content_curve.txt"), row.names=F, col.names=T, append=F)
-write.table(cbind(date_hist_sim[1,], GC_VDL_df[1,]), paste0(OutputFolder, "/GC_variable_draft.txt"), row.names=F, col.names=T, append=F)
+######### Write output for first timestep
 
-
-if (track_curtailment == 1) {
-	write.table(cbind(date_hist_sim[1,], mainstem_shortfall[1,]), paste0(OutputFolder, "/mainstem_shortfall.txt"), row.names=F, col.names=T, append=F)
-	write.table(cbind(date_hist_sim[1,], mainstem_curtailments[1,]), paste0(OutputFolder, "/mainstem_curtailment.txt"), row.names=F, col.names=T, append=F)
+for (var in out_vars) {
+	write.table(cbind(date_hist_sim[1,], get(var)[1,]), paste0(OutputFolder, var, ".txt"), row.names=F, col.names=T, append=F)
 }
+
+
+
+
+
+
+
+
