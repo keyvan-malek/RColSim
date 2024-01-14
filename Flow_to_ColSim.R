@@ -1,5 +1,6 @@
-scr_name <- "Historical/baseline" ## climate scenario (Historical baseline is based on gridMET forcing data from 1979 - 2015)
-run_type <- "supply_and_demand" ## should surface water withdrawals be considered? (if yes, choose supply_and_demand; if no, choose supply_only)
+scr_name <- commandArgs()[6] ## climate scenario (Historical baseline is based on gridMET forcing data from 1979 - 2015)
+scr_name <- gsub("_", "/", scr_name)
+run_type <- commandArgs()[7] ## should surface water withdrawals be considered? (if yes, choose supply_and_demand; if no, choose supply_only)
 
 ############ Load functions
 
@@ -21,7 +22,7 @@ if (run_type == "supply_and_demand") {
 gcm <- strsplit(scr_name, "/")[[1]][1] ## The global circulation model, if future climate data are used, or Historical_baseline for historical climate data
 scr <- strsplit(scr_name, "/")[[1]][2] ## rcp4.5 or rcp8.5 for future climate scenarios
 indir <- "~/RColSim_v1/inputs/"
-indir2 <- paste0("~/RColSim_v1/Preliminary/output/", gcm, "/")
+indir2 <- paste0("~/RColSim_v1/Preliminary/output/", run_type, "/", gcm, "/")
 stn_colsim <- read.table(paste0(indir, "RColSim_stations.txt"), header=T, stringsAsFactors=F)
 DamMaxMin <- read.table(paste0(indir, "DamMaxMin.txt"), header=T)
 mainstem_names <- c("CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Dams along the Columbia mainstem
@@ -34,7 +35,11 @@ cfsTOafw <- 1.9834 * 7 ## cubic feet per second to acre-feet per week conversion
 ######### Read supply and demand
 
 Supply_Input <- read.table(paste0(indir2, "supply_", scr, ".txt"), header=T)
-N <- tail(which(Supply_Input$Month == 9 & Supply_Input$Year == 2007), 1) ## Number of timesteps. We stop at 2007 because the historical climate inputs for Canadian portion of the CRB are erroneous.
+if (scr_name == "Historical_baseline/baseline") {
+	N <- tail(which(Supply_Input$Month == 9 & Supply_Input$Year == 2007), 1) ## Number of timesteps. We stop at 2007 because the historical climate inputs for Canadian portion of the CRB are erroneous.
+} else {
+	N <- nrow(Supply_Input)
+}
 sim_end_date <- as.Date(paste(Supply_Input$Month, Supply_Input$Day, Supply_Input$Year, sep="/"), "%m/%d/%Y")[N]
 Supply_Input <- Supply_Input[1:N,]
 names(Supply_Input)[1:4] <- c("Week", "Month", "Day", "Year")
@@ -52,23 +57,25 @@ if (simulate_demand == 1) {
 }
 
 ########### Calculate streamflow for rule curves #############################
-## Streamflow is computed by subtracting water demand from water supply for each of the drainage areas. 
+## Unregulated streamflow is computed by subtracting water demand from water supply for each of the drainage areas. 
 ## Here, water supply is determined from VIC model simulations of naturalized streamflow, which are routed and bias corrected to the 2020 no regulation, no irrigation (NRNI) dataset.
 ## Agricultural water demand is simulated with the VIC-CropSyst model. The irrigation demands are aggregated from the grid scale to drainage areas using the file "inputs/pod_update_RColSim.txt", which links each grid cell to 
 ## its drainage.
 
-
-flow_map <- read.table(paste0(indir, "modified_flow_map.txt"), header=T, stringsAsFactors=F) # Upstream/downstream position of stream gages at which flow inputs are measured
-mod_flow_list <- names(Supply_Input)[-c(1:4)]
-modified_flow <- data.frame(matrix(nrow=nrow(Supply_Input), ncol=length(mod_flow_list) + 4))
-modified_flow[1:4] <- timeseries
-names(modified_flow) <- c(names(timeseries), mod_flow_list)
-for (dam in mod_flow_list) {
-	col_names <- get_columns(dam, flow_map)
-	up_demand <- apply(Demand_Input[col_names], 1, sum) ## Total upstream demand
-	modified_flow[dam] <- Supply_Input[,dam] - up_demand 
+if (simulate_demand == 1) {
+	flow_map <- read.table(paste0(indir, "modified_flow_map.txt"), header=T, stringsAsFactors=F) # Upstream/downstream position of stream gages at which flow inputs are measured
+	mod_flow_list <- names(Supply_Input)[-c(1:4)]
+	modified_flow <- data.frame(matrix(nrow=nrow(Supply_Input), ncol=length(mod_flow_list) + 4))
+	modified_flow[1:4] <- timeseries
+	names(modified_flow) <- c(names(timeseries), mod_flow_list)
+	for (dam in mod_flow_list) {
+		col_names <- get_columns(dam, flow_map)
+		up_demand <- apply(Demand_Input[col_names], 1, sum) ## Total upstream demand
+		modified_flow[dam] <- Supply_Input[,dam] - up_demand 
+	}
+} else {
+	modified_flow <- Supply_Input
 }
-
 ########### Return flow from Columbia Basin Project
 
 if (simulate_demand == 1) {
@@ -117,8 +124,6 @@ names(Output_to_ColSim) <- names_Output
 
 ## For option 1, the PDRs and forecast errors from the Assured Operating Plans (see documentation) are used.
 ## For option 2, the PDRs are assumed equal to minimum project outflows and the forecast error is assumed to be zero.
-
-
 
 refill_option <- 1
 if (refill_option == 1) {
@@ -392,7 +397,7 @@ if (simulate_demand == 1) {
 }
 
 Output_to_ColSim$DamYear <- ifelse(Output_to_ColSim$Month >= 8, Output_to_ColSim$Year + 1, Output_to_ColSim$Year)
-write.table(Output_to_ColSim, file=paste0(indir, "ToRColSim_scenario_", scr, ".txt"), row.names=FALSE)
+write.table(Output_to_ColSim, file=paste0(indir, "ToRColSim_scenario_", scr, "_", run_type, ".txt"), row.names=FALSE)
 
 #############################################################
 ######													#####				
@@ -400,34 +405,19 @@ write.table(Output_to_ColSim, file=paste0(indir, "ToRColSim_scenario_", scr, ".t
 ######													#####					
 #############################################################
 
-outdir <- paste0("~/RColSim_v1/output/", gcm, "/")
 if (scr_name == "Historical_baseline/baseline") {
 	global_input_file <- "Historical_baseline"
-	scr <- "baseline"
-	gcm <- "Historical_baseline"
+	outdir <- paste0("~/RColSim_v1/output/", run_type, "/Historical_baseline/")
 } else {
 	global_input_file <- sub("/", "_", scr_name)
-	scr <- strsplit(global_input_file, "_")[[1]][2]
-	gcm <- strsplit(global_input_file, "_")[[1]][1]
+	outdir <- paste0("~/RColSim_v1/output/", run_type, "/", gcm, "/", scr, "/")
 }
+if (!dir.exists(outdir)) { dir.create(outdir, recursive=T) }
 GIF <- data.frame(matrix(nrow=5, ncol=2))
 GIF[,1] <- c("RColSim_WD", "Flow_Input_File", "Output_Folder", "simulation_start_year", "simulation_end_date")
 GIF[1,2] <- "~/RColSim_v1"
-GIF[2,2] <- paste0(indir, "ToRColSim_scenario_", scr, ".txt")
-if (global_input_file == "Historical_baseline") {
-	GIF[3,2] <- outdir
-} else {
-	GIF[3,2] <- paste0(outdir, scr, "/")
-}
+GIF[2,2] <- paste0(indir, "ToRColSim_scenario_", scr, "_", run_type, ".txt")
+GIF[3,2] <- outdir
 GIF[4,2] <- sim_start_year
 GIF[5,2] <- as.character(sim_end_date)
-
-if (!dir.exists(outdir)) {
-	dir.create(outdir, recursive=TRUE)
-}
-if (gcm!="Historical_baseline") {
-	if (!dir.exists(paste0(outdir, scr))) {
-		dir.create(paste0(outdir, scr))
-	}
-}
-write.table(GIF, paste0("~/RColSim_v1/inputs/GIF_", global_input_file), col.names=F, row.names=F, quote=F)
+write.table(GIF, paste0("~/RColSim_v1/inputs/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=F)

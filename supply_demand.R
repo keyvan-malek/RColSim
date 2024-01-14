@@ -1,6 +1,6 @@
 library(xts)
-scr <- "Historical_baseline"
-run_type <- "supply_and_demand"
+scr <- commandArgs()[6]
+run_type <- commandArgs()[7] # must either be "supply_only" or "supply_and_demand"
 
 cfsTOafw <- 13.8838
 get_iflow <- function(time_series, station) {
@@ -301,23 +301,21 @@ if (scr_name == "Historical_baseline/baseline") {
 	timeseries <- read.table("~/Bias_correction/flow_weekly_bc/ts_GCM.txt", header=T)
 }
 
+outdir <- paste0("~/RColSim_v1/Preliminary/output/", run_type, "/", strsplit(scr_name, "/")[[1]][1])
+if (!dir.exists(outdir)) { dir.create(outdir, recursive=T) }
+setwd(outdir)
+
 supply <- cbind(timeseries, final_weekly_supply[start_index:end_index,])
-write.table(supply, file=paste0("~/RColSim_v1/Preliminary/output/", strsplit(scr_name, "/")[[1]][1], "/", "supply_", strsplit(scr_name, "/")[[1]][2],  ".txt"), row.names=F)
+write.table(supply, file=paste0("supply_", strsplit(scr_name, "/")[[1]][2],  ".txt"), row.names=F)
 
 if (run_type == "supply_and_demand") {
 	demand <- cbind(timeseries, data.frame(weekly_demand_agg[start_index:end_index,]))
-	shortfall <- cbind(timeseries, instream_shortfall[start_index:end_index,which(names(instream_shortfall) %in% trib_names)]) # instream shortfall for tributaries
-	actual_flow <- cbind(timeseries, actual_flow[start_index:end_index,])
 	iflow <- cbind(timeseries, iflows[start_index:end_index,which(names(iflows) %in% mainstem_names)])
-	curtailment_trib <- cbind(timeseries, curtailment_trib[start_index:end_index,which(names(curtailment_trib) %in% trib_names)])
 	interruptible <- cbind(timeseries, data.frame(interruptible_weekly[start_index:end_index, which(names(interruptible_weekly) %in% mainstem_names)]))
-	names(demand)[1:4] <- names(shortfall)[1:4] <- names(iflow)[1:4] <- names(interruptible)[1:4] <- c("Week", "Month", "Day", "Year")
-	#write.table(actual_flow, file=paste0("~/RColSim_v1/Preliminary/output/", strsplit(scr_name, "/")[[1]][1], "/", "actual_flow_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
-	#write.table(shortfall, file=paste0("~/RColSim_v1/Preliminary/output/", strsplit(scr_name, "/")[[1]][1], "/", "shortfall_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
-	write.table(iflow, file=paste0("~/RColSim_v1/Preliminary/output/", strsplit(scr_name, "/")[[1]][1], "/", "iflow_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
-	#write.table(curtailment_trib, file=paste0("~/RColSim_v1/Preliminary/output/", strsplit(scr_name, "/")[[1]][1], "/", "curtailment_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
-	write.table(interruptible, file=paste0("~/RColSim_v1/Preliminary/output/", strsplit(scr_name, "/")[[1]][1], "/", "interruptible_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
-	write.table(demand, file=paste0("~/RColSim_v1/Preliminary/output/", strsplit(scr_name, "/")[[1]][1], "/", "demand_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
+	names(demand)[1:4] <- names(iflow)[1:4] <- names(interruptible)[1:4] <- c("Week", "Month", "Day", "Year")
+	write.table(iflow, file=paste0("iflow_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
+	write.table(interruptible, file=paste0("interruptible_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
+	write.table(demand, file=paste0("demand_", strsplit(scr_name, "/")[[1]][2], ".txt"), row.names=F)
 }
 
 

@@ -2141,7 +2141,7 @@ HH_ORC <- function() {
 
 ########### Hungry Horse fish flow ###########################
 
-####### HHMin (2000 PALFWS BiOp Section 3.A.1 Page 6)
+####### HHMin (2000 FCRPS BiOp Section 3.A.1 Page 6)
 # Minimum release from Hungry Horse
 # 400 to 900 cfs
 # variable based upon predicted inflows between april and august

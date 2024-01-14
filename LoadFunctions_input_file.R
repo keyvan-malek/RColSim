@@ -1,6 +1,6 @@
 
 get_iflow_mainstem = function(station) {
-	ifile = read.table(paste('~/Bias_correction/flow_weekly_bc/', station, '_iflow_rules', sep=""))
+	ifile = read.table(paste0('~/RColSim_v1/inputs/', station, '_iflow_rules', sep=""))
 	Months = timeseries$Month
 	Days = timeseries$Day
 	instream = as.numeric(matrix(nrow=length(Days), ncol=1, 0))
@@ -12,7 +12,6 @@ get_iflow_mainstem = function(station) {
 	}
 	return(instream)
 }
-
 
 get_columns <- function(dam, flow_map) {
 	ind = dam
@@ -161,8 +160,6 @@ get_rule_curves <- function(res) {
 	return(c(flood_o, critical_o, assured_o, lower_o, BiOp_o, variable_o))
 }
 
-
-
 calc_refill_curve <- function(type) {
 	RefillCurve <- data.frame(matrix(ncol=length(ListOfDams)+3 , nrow=N, 0))
 	names(RefillCurve) <- c("Week", "Month", "Year", ListOfDams)
@@ -290,10 +287,6 @@ calc_refill_with_upstream_storage <- function(type, res) {
 	}
 	return(RefillCurve)
 }
-
-
-
-
 
 RuleCurve_df <- function(res) {
 	RuleCurves = data.frame(matrix(nrow=N, ncol=11))
