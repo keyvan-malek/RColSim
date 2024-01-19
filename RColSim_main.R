@@ -68,15 +68,15 @@ date_hist_sim <- date_hist_sim_0[lines_to_keep,]
 N_of_TimeSteps <- nrow(date_hist_sim)
 
 # ------- Load functions and rule curves
-# 5 files need to be loaded in the following order: 1- LoadFunctions.R 2- Read_Rule_Curves.R 3- Switches.R  4- dataframes.R 5- Measures of performance
+# 5 files need to be loaded in the following order: 1- load_functions.R 2- read_rule_curves.R 3- switches.R  4- dataframes.R 5- Measures of performance
 
 # 1- LOAD ALL FUNCTIONS
-source("LoadFunctions.R") 
+source("load_functions.R") 
 # 2- READ ALL INPUT FILES
-source("Read_Rule_Curves.R")
+source("read_rule_curves.R")
 Read_Rule_Curves()
 # 3- DEFINE SWITCHES AND DEFAULTS
-source("Switches.R")
+source("switches.R")
 ReadSwitches()
 # 4- CREATE DATAFRAMES
 source("dataframes.R")
