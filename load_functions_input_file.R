@@ -1,6 +1,6 @@
 
 get_iflow_mainstem = function(station) {
-	ifile = read.table(paste0('~/RColSim_v1/inputs/', station, '_iflow_rules', sep=""))
+	ifile = read.table(paste0('inputs/', station, '_iflow_rules', sep=""))
 	Months = timeseries$Month
 	Days = timeseries$Day
 	instream = as.numeric(matrix(nrow=length(Days), ncol=1, 0))
@@ -217,9 +217,9 @@ calc_refill_curve <- function(type) {
 		}
 	}
 	if (type == "regular") {
-		write.table(RefillCurve, "~/Step_4/test_weekly_assured_before_refill.txt", col.names=T, row.names=F, quote=F)
+		write.table(RefillCurve, "misc/test_weekly_assured_before_refill.txt", col.names=T, row.names=F, quote=F)
 	} else if (type == "minimum") {
-		write.table(RefillCurve, "~/Step_4/test_weekly_assured_before_refill_min.txt", col.names=T, row.names=F, quote=F)
+		write.table(RefillCurve, "misc/test_weekly_assured_before_refill_min.txt", col.names=T, row.names=F, quote=F)
 	}	
 	return(RefillCurve)
 }
@@ -329,7 +329,7 @@ RuleCurve_df <- function(res) {
 	RuleCurves$OperatingRuleCurve <- pmin(pmax(pmin(pmax(RuleCurves$AssuredRefill, RuleCurves$Critical), RuleCurves$VariableRefill), RuleCurves$LowerLimit), RuleCurves$Flood, RuleCurves$BiOp)
 	RuleCurves$RefillReq <- c(RuleCurves$OperatingRuleCurve[2:N] - RuleCurves$OperatingRuleCurve[1:(N-1)], 0)
 	RuleCurves[is.na(RuleCurves)] = DamMaxMin[1,res]
-	write.table(RuleCurves, paste0("~/Step_4/", res, "RefillCurves.txt"), row.names=F, col.names=T, quote=F)
+	write.table(RuleCurves, paste0("misc/", res, "RefillCurves.txt"), row.names=F, col.names=T, quote=F)
 	return(RuleCurves)
 }
 DAResidualInflow <- function(S) {

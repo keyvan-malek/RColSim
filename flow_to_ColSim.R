@@ -4,9 +4,9 @@ run_type <- commandArgs()[7] ## should surface water withdrawals be considered? 
 
 ############ Load functions
 
-source("~/RColSim_v1/load_functions_input_file.R")
-source("~/RColSim_v1/load_functions.R")
-source("~/RColSim_v1/read_rule_curves.R")
+source("load_functions_input_file.R")
+source("load_functions.R")
+source("read_rule_curves.R")
 Read_Rule_Curves()
 
 ##########################
@@ -21,8 +21,8 @@ if (run_type == "supply_and_demand") {
 }
 gcm <- strsplit(scr_name, "/")[[1]][1] ## The global circulation model, if future climate data are used, or Historical_baseline for historical climate data
 scr <- strsplit(scr_name, "/")[[1]][2] ## rcp4.5 or rcp8.5 for future climate scenarios
-indir <- "~/RColSim_v1/inputs/"
-indir2 <- paste0("~/RColSim_v1/Preliminary/output/", run_type, "/", gcm, "/")
+indir <- "inputs/"
+indir2 <- paste0("Preliminary/output/", run_type, "/", gcm, "/")
 stn_colsim <- read.table(paste0(indir, "RColSim_stations.txt"), header=T, stringsAsFactors=F)
 DamMaxMin <- read.table(paste0(indir, "DamMaxMin.txt"), header=T)
 mainstem_names <- c("CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Dams along the Columbia mainstem
@@ -285,7 +285,7 @@ Output_to_ColSim$CorrectedDARunoffAprAug <- Output_to_ColSim$DARunoffAprAug - c(
 
 GCRuleCurves.df <- RuleCurve_df("GCOUL")
 OperatingRuleCurves.df$GCOUL <- GCRuleCurves.df$Flood
-write.table(OperatingRuleCurves.df, "~/RColSim_v1/inputs/OperatingRuleCurves.txt", row.names=F, col.names=T, quote=F)
+write.table(OperatingRuleCurves.df, "inputs/OperatingRuleCurves.txt", row.names=F, col.names=T, quote=F)
 
 full_pool <- c(MICAA=MIFullPoolVol, ARROW=ARFullPoolVol, LIBBY=LBFullPoolVol, FLASF=HHFullPoolVol, DUNCA=DUFullPoolVol, DWORS=DWFullPoolVol, BROWN=BRFullPoolVol, GCOUL=GCFullPoolVol, FLAPO=KEFullPoolVol, ALBEN=AFFullPoolVol, CORRA=CLFullPoolVol)
 min_storage <- c(MICAA=4.08e6, ARROW=3.6e6, LIBBY=4.98e6, FLASF=3.07e6, DUNCA=1.27e6, DWORS=2015200, BROWN=975000, GCOUL=5.19e6, FLAPO=1.22e6, CORRA=6.72e6, ALBEN=1.12e6)
@@ -301,7 +301,7 @@ Output_to_ColSim$DACorrectedResidualInflowAprAug <- DAResidualInflow(DAUpStreamS
 
 ##### Calculate Initial Controlled Flow 
 
-ICF_table <- read.table("~/RColSim_v1/default_rule_curves/Dalles_ICF.txt", header=T) ## Chart 1 from FCOP (2003)
+ICF_table <- read.table("default_rule_curves/Dalles_ICF.txt", header=T) ## Chart 1 from FCOP (2003)
 flow_inc <- seq(from=30e6, to=140e6, by=5e6)
 Output_to_ColSim$InitialControlledFlow <- sapply(1:N, function(x) get_ICF(Output_to_ColSim$DACorrectedResidualInflowAprAug[x], timeseries$Week[x]))  ## Function called from (LoadFunctions_input_file.R)
 
@@ -407,17 +407,17 @@ write.table(Output_to_ColSim, file=paste0(indir, "ToRColSim_scenario_", scr, "_"
 
 if (scr_name == "Historical_baseline/baseline") {
 	global_input_file <- "Historical_baseline"
-	outdir <- paste0("~/RColSim_v1/output/", run_type, "/Historical_baseline/")
+	outdir <- paste0("output/", run_type, "/Historical_baseline/")
 } else {
 	global_input_file <- sub("/", "_", scr_name)
-	outdir <- paste0("~/RColSim_v1/output/", run_type, "/", gcm, "/", scr, "/")
+	outdir <- paste0("output/", run_type, "/", gcm, "/", scr, "/")
 }
 if (!dir.exists(outdir)) { dir.create(outdir, recursive=T) }
 GIF <- data.frame(matrix(nrow=5, ncol=2))
 GIF[,1] <- c("RColSim_WD", "Flow_Input_File", "Output_Folder", "simulation_start_year", "simulation_end_date")
-GIF[1,2] <- "~/RColSim_v1"
+GIF[1,2] <- getwd()
 GIF[2,2] <- paste0(indir, "ToRColSim_scenario_", scr, "_", run_type, ".txt")
 GIF[3,2] <- outdir
 GIF[4,2] <- sim_start_year
 GIF[5,2] <- as.character(sim_end_date)
-write.table(GIF, paste0("~/RColSim_v1/inputs/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=F)
+write.table(GIF, paste0("inputs/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=F)

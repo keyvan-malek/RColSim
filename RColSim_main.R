@@ -27,12 +27,13 @@
 #                                                    Read the global input file																 #
 #                                                            																			     #
 # -------------------------------------------------------------------------------------------------------------------------------------------#
-                                           
-scr <- commandArgs()[6]
-run_type <- commandArgs()[7]
-# scr <- "Historical_baseline"
+
+if (!exists("scr")) {                                          
+	scr <- commandArgs()[6]
+	run_type <- commandArgs()[7]
+}
 print(paste0("Now doing scenario: ", scr))
-GlobalFile <- read.table(paste0("~/RColSim_v1/inputs/GIF_", scr, "_", run_type), stringsAsFactors=F)
+GlobalFile <- read.table(paste0("inputs/GIF_", scr, "_", run_type), stringsAsFactors=F)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------#

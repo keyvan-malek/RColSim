@@ -4,7 +4,7 @@ run_type <- commandArgs()[7] # must either be "supply_only" or "supply_and_deman
 
 cfsTOafw <- 13.8838
 get_iflow <- function(time_series, station) {
-	ifile <- read.table(paste0('~/RColSim_v1/inputs/', station, '_iflow_rules'))
+	ifile <- read.table(paste0('inputs/', station, '_iflow_rules'))
 	Months <- as.numeric(strftime(time_series,"%m"))
 	Days <- as.numeric(strftime(time_series,"%d"))
 	instream <- as.numeric(matrix(nrow=length(Days), ncol=1, 0))
@@ -18,12 +18,12 @@ get_iflow <- function(time_series, station) {
 }
 scr_name <- sub("_", "/", scr)
 
-setwd('~/RColSim_v1/inputs')
-stn_list <- read.table("stn_code_name", header=F, stringsAsFactors=F)[,1]
+
+stn_list <- read.table("inputs/stn_code_name", header=F, stringsAsFactors=F)[,1]
 stn_list <- stn_list[-which(stn_list == "LISPO")]
-pod_stns <- read.table("stn_code_name", header=F, stringsAsFactors=F)[,1]
+pod_stns <- read.table("inputs/stn_code_name", header=F, stringsAsFactors=F)[,1]
 pod_stns <- c(pod_stns, "OWYHE_ID")
-stn_colsim <- read.table("RColSim_stations.txt", header=T, stringsAsFactors=F)[,1]
+stn_colsim <- read.table("inputs/RColSim_stations.txt", header=T, stringsAsFactors=F)[,1]
 stn_iflow <- c("SIMNI","METPA","WENMO","WENPE","OKANA","OKANO", "COLKE", "CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Control points for instream flow rules
 trib_names <- c("SIMNI","METPA","WENMO","WENPE","OKANA","OKANO", "COLKE") ## Control points along tributaries to the Columbia R.
 mainstem_names <- c("CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Control points along the Columbia mainstem
@@ -45,8 +45,8 @@ if(scr_name == "Historical/baseline") {
 
 nrows <- as.numeric(end_date - begin_date + 1)
 daily_supply <- data.frame(matrix(ncol=(length(stn_list)+3), nrow=nrows, -9999))
-routdir <- "~/RColSim_v1/Preliminary/routed_flow/"
-biasdir <- "~/RColSim_v1/Preliminary/bc_flow/"
+routdir <- "Preliminary/routed_flow/"
+biasdir <- "Preliminary/bc_flow/"
 
 for (ii_stn in 1:length(stn_list)) {
 	print(ii_stn)
@@ -100,11 +100,11 @@ weekly_supply <- as.data.frame(weekly_supply)
 
 if (run_type == "supply_and_demand") {
 	if (scr_name == "Historical_baseline/baseline") {
-		daily_demand <- read.table(paste0("~/RColSim_v1/Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_demands.txt"))
-		daily_interruptible_demand <- read.table(paste0("~/RColSim_v1/Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_interruptible_demands.txt"))
+		daily_demand <- read.table(paste0("Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_demands.txt"))
+		daily_interruptible_demand <- read.table(paste0("Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_interruptible_demands.txt"))
 	} else {
-		daily_demand <- read.table(paste0("~/RColSim_v1/Preliminary/irrigation_demands/", scr_name, "_demands.txt"))
-		daily_interruptible_demand <- read.table(paste0("~/RColSim_v1/Preliminary/irrigation_demands/", scr_name, "_interruptible_demands.txt"))
+		daily_demand <- read.table(paste0("Preliminary/irrigation_demands/", scr_name, "_demands.txt"))
+		daily_interruptible_demand <- read.table(paste0("Preliminary/irrigation_demands/", scr_name, "_interruptible_demands.txt"))
 	}
 	xts_demand <- xts(daily_demand[1:nrows,1:L_col2], seq(from=begin_date, to=end_date, by=1))
 	xts_interruptible_demand <- xts(daily_interruptible_demand[1:nrows,1:L_col2], seq(from=begin_date, to=end_date, by=1))
@@ -117,8 +117,8 @@ if (run_type == "supply_and_demand") {
 	################# Add Residential Demand ############################
 
 	MGtoAFM <- 3.068893 
-	muni_demand <- read.csv("Final_Muni_Demand.csv", stringsAsFactors=F) ## Consumptive municiple water demand by subbasin in Washington State 
-	WRIA_to_pod_areas <- read.csv("WRIA_pod_areas.csv", stringsAsFactors=F) 
+	muni_demand <- read.csv("inputs/Final_Muni_Demand.csv", stringsAsFactors=F) ## Consumptive municiple water demand by subbasin in Washington State 
+	WRIA_to_pod_areas <- read.csv("inputs/WRIA_pod_areas.csv", stringsAsFactors=F) 
 	WRIA_areas <- aggregate(WRIA_to_pod_areas[,5], list(WRIA_to_pod_areas[,1]), sum)
 	WRIA_to_pod_areas$WRIA_Area <- WRIA_areas[match(WRIA_to_pod_areas[,1], WRIA_areas[,1]),2]
 	WRIA_to_pod_areas$Fraction <- WRIA_to_pod_areas[,5] / WRIA_to_pod_areas[,6]
@@ -185,7 +185,7 @@ if (run_type == "supply_and_demand") {
 		
 	######################### Tributary Curtailment ###############################	
 
-	SWFraction <- read.table("interruptible_sw_fractions.txt", header=T)
+	SWFraction <- read.table("inputs/interruptible_sw_fractions.txt", header=T)
 	iflows <- data.frame(matrix(nrow=length(dates), ncol=length(pod_stns), 0))
 	for(i in 1:length(stn_iflow)) {
 		col = which(pod_stns==stn_iflow[i])
@@ -264,7 +264,7 @@ if (run_type == "supply_and_demand") {
 	apply_correction2 <- c("LUCKY", "LBOIS", "PAYET", "PAYHS")
 	adj_demand[,apply_correction] <- UpSnakeCorrectionFactor * adj_demand[,apply_correction]
 	adj_demand[,apply_correction2] <- UpSnakeCorrectionFactor2 * adj_demand[,apply_correction2]
-	map_stations <- read.csv("station_mapping", sep="\t", header=F, stringsAsFactors=F) ## maps the demand drainage areas to the RColSim drainage areas
+	map_stations <- read.csv("inputs/station_mapping", sep="\t", header=F, stringsAsFactors=F) ## maps the demand drainage areas to the RColSim drainage areas
 	weekly_demand_agg <- adj_demand[,which(pod_stns %in% stn_colsim)]   
 	new_pod_names <- pod_stns[pod_stns %in% stn_colsim]
 	for(i in 1:length(new_pod_names)) {
@@ -294,14 +294,14 @@ final_weekly_supply$HFORK <- weekly_supply$HFORK
 final_weekly_supply$LIMEP <- weekly_supply$LIMEP
 
 if (scr_name == "Historical_baseline/baseline") {
-	timeseries <- read.table("~/Bias_correction/flow_weekly_bc/ts_historical.txt", header=T) 
+	timeseries <- read.table("inputs/ts_historical.txt", header=T) 
 } else if (length(grep("hist", scr_name)) == 1) {
-	timeseries <- read.table("~/Bias_correction/flow_weekly_bc/ts_hist.txt", header=T)
+	timeseries <- read.table("inputs/ts_hist.txt", header=T)
 } else {
-	timeseries <- read.table("~/Bias_correction/flow_weekly_bc/ts_GCM.txt", header=T)
+	timeseries <- read.table("inputs/ts_GCM.txt", header=T)
 }
 
-outdir <- paste0("~/RColSim_v1/Preliminary/output/", run_type, "/", strsplit(scr_name, "/")[[1]][1])
+outdir <- paste0("Preliminary/output/", run_type, "/", strsplit(scr_name, "/")[[1]][1])
 if (!dir.exists(outdir)) { dir.create(outdir, recursive=T) }
 setwd(outdir)
 

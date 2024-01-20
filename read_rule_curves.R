@@ -1,4 +1,4 @@
-input_dir = "~/RColSim_v1/default_rule_curves/"
+input_dir = "default_rule_curves/"
 Read_Rule_Curves <- function() {
 	###### common ##########
 	lower_limit_input <<- read.table(paste0(input_dir, "rule_curve_lower_limits.txt"), header=T)
