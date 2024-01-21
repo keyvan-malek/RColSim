@@ -87,7 +87,7 @@ if (simulate_demand == 1) {
 		supply_for_return_flow[,i+4] <- modified_flow[,col]
 	}
 	names(supply_for_return_flow) <- c("Week", "Month", "Day", "Year", supply_for_return_flow_locs)
-	return_fractions <- read.csv(paste0(indir, "return_flow_fractions.csv"), header=F) # these fractions were derived from the document, "Calculation of 2020 Irrigation Depletions for
+	return_fractions <- read.csv(paste0(indir, "return_flow_fractions.csv"), header=T)[,-1] # these fractions were derived from the document, "Calculation of 2020 Irrigation Depletions for
 	# 2020 Level Modified Streamsflows, Hills et al., prepared for BPA, 2020.
 } else {
 	return_fractions <- data.frame(matrix(nrow=N, ncol=3, 0))
@@ -101,7 +101,7 @@ min_refill_names <- c("AF", "AR", "BR", "CL", "DU", "DW", "GC", "HH", "LB", "MI"
 Dem_list <- c("BoiseSys", "Minidoka", "Owyhee", "Payette", "UpSnake", stn_colsim[match(mainstem_names, stn_colsim[,1]),2])
 names_Output <- c("Week", "Month", "Day", "Year", "BRRunoffAprJul", "DARunoffAprAug", "DARunoffAprSep", "DARunoffJanJul", "DURunoffAprAug", "DWRunoffAprJul", "HHRunoffAprAug", "HHRunoffMaySep",
 	"LBRunoffAprAug", "LGRunoffAprJul", "MIRunoffAprAug", "MIRunoffMayAug", "PayetteResidualInflowJanJun", "OwyheeResidualInflowJanMay", "BoiseResidualInflowJanJul", "HeiseResidualInflowJanJul", 
-	"HenryResidualInflowJanJun", "RirieResidualInflowJanJun", "PRResidualInflowJanMar", "GCResidualInflowJanMar", "RetVICWA", "RetVICPR", "RetVICMCN", paste0(refill_names, "VariableRefillCurve"),
+	"HenryResidualInflowJanJun", "RirieResidualInflowJanJun", "PRResidualInflowJanMar", "GCResidualInflowJanMar", "RetWA", "RetPR", "RetMCN", paste0(refill_names, "VariableRefillCurve"),
 	paste0(min_refill_names, "MinRefillCurve"), paste0(min_refill_names, "OperatingRuleCurve"), paste0("Flow", c("LimePoint", stn_colsim[,2])), paste0("Dem", Dem_list), 
 	paste0("Curt", stn_colsim[match(mainstem_names, stn_colsim[,1]),2]), paste0("Iflow", stn_colsim[match(mainstem_names, stn_colsim[,1]),2]), "CorrectedDARunoffAprAug", 
 	"InitialControlledFlow", "start_refill_wk", "start_refill_wk_GC", "DACorrectedResidualInflowAprAug")
@@ -386,14 +386,14 @@ for (m in mainstem_names) {
 	}
 }
 if (simulate_demand == 1) {
-	annual_return <- aggregate(supply_for_return_flow[5], list(supply_for_return_flow$Year), sum)
-	Output_to_ColSim$RetVICWA <- return_fractions[match(supply_for_return_flow$Week, 1:52),1] * annual_return[match(supply_for_return_flow$Year, annual_return[,1]),2]
-	Output_to_ColSim$RetVICPR <- return_fractions[match(supply_for_return_flow$Week, 1:52),2] * annual_return[match(supply_for_return_flow$Year, annual_return[,1]),2]
-	Output_to_ColSim$RetVICMCN <- return_fractions[match(supply_for_return_flow$Week, 1:52),3] * annual_return[match(supply_for_return_flow$Year, annual_return[,1]),2]
+	annual_return <- aggregate(supply_for_return_flow[5:7], list(supply_for_return_flow$Year), sum)
+	Output_to_ColSim$RetWA <- return_fractions$WANAP[match(supply_for_return_flow$Week, 1:52)] * annual_return$WANAP[match(supply_for_return_flow$Year, annual_return[,1])]
+	Output_to_ColSim$RetPR <- return_fractions$PRIRA[match(supply_for_return_flow$Week, 1:52)] * annual_return$PRIRA[match(supply_for_return_flow$Year, annual_return[,1])]
+	Output_to_ColSim$RetMCN <- return_fractions$MCNAR[match(supply_for_return_flow$Week, 1:52)] * annual_return$MCNAR[match(supply_for_return_flow$Year, annual_return[,1])]
 } else {
-	Output_to_ColSim$RetVICWA <- rep(0, nrow(Output_to_ColSim)) 
-	Output_to_ColSim$RetVICPR <- rep(0, nrow(Output_to_ColSim)) 
-	Output_to_ColSim$RetVICMCN <- rep(0, nrow(Output_to_ColSim)) 
+	Output_to_ColSim$RetWA <- rep(0, nrow(Output_to_ColSim)) 
+	Output_to_ColSim$RetPR <- rep(0, nrow(Output_to_ColSim)) 
+	Output_to_ColSim$RetMCN <- rep(0, nrow(Output_to_ColSim)) 
 }
 
 Output_to_ColSim$DamYear <- ifelse(Output_to_ColSim$Month >= 8, Output_to_ColSim$Year + 1, Output_to_ColSim$Year)

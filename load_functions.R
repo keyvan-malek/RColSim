@@ -4015,7 +4015,7 @@ RIOut <- function() {
 #######################################################
 
 WanapumFlowData <- function() {
-	flow_o <- FlowWA + RetVICWA
+	flow_o <- FlowWA + RetWA
 	return(flow_o)
 }
 WAInc <- function() {
@@ -4023,7 +4023,7 @@ WAInc <- function() {
 	return(WAInc_o)
 }
 WACurtail <- function() {
-	WACurtail_0 <- min(DemWA, max(IflowWA - RIOut() - WAInc(), 0))
+	WACurtail_0 <- min(DemWA, max(IflowWA - WAIn(), 0))
 	if (curtail_option == 1) {
 		WACurtail_o <- ifelse(WACurtail_0 > 0, CurtWA, 0)
 	} else if (curtail_option == 2) {
@@ -4039,7 +4039,7 @@ WACurtail <- function() {
 	return(WACurtail_o)
 }
 WAInstreamShortfall <- function() {
-	WAInstreamShortfall_o = max(IflowWA - RIOut() - WAInc(), 0)
+	WAInstreamShortfall_o = max(IflowWA - WAIn(), 0)
 	return(WAInstreamShortfall_o)
 }
 WAPenLimit <- function() {
@@ -4073,7 +4073,7 @@ WAOut <- function() {
 #######################################################
 
 PriestRapidsFlowData <- function() {
-	flow_o <- FlowPR + RetVICPR
+	flow_o <- FlowPR + RetPR
 	return(FlowPR)
 }
 PRInc <- function() {
@@ -4081,7 +4081,7 @@ PRInc <- function() {
 	return(PRInc_o)
 }
 PRCurtail <- function()	{
-	PRCurtail_0 <- min(DemPR, max(IflowPR - WAOut() - PRInc(), 0))
+	PRCurtail_0 <- min(DemPR, max(IflowPR - PRIn(), 0))
 	if (curtail_option == 1) {
 		PRCurtail_o <- ifelse(PRCurtail_0 > 0, CurtPR, 0)
 	} else if (curtail_option == 2) {
@@ -4097,7 +4097,7 @@ PRCurtail <- function()	{
 	return(PRCurtail_o)
 }
 PRInstreamShortfall <- function() {
-	PRInstreamShortfall_o = max(IflowPR - WAOut() - PRInc(), 0)
+	PRInstreamShortfall_o = max(IflowPR - PRIn(), 0)
 	return(PRInstreamShortfall_o)
 }
 PRPenLimit <- function() {
@@ -6068,7 +6068,7 @@ IHOut <- function() {
 #######################################################
 
 McNaryFlowData <- function() {
-	flow_o <- FlowMCN + RetVICMCN
+	flow_o <- FlowMCN + RetMCN
 	return(flow_o)
 }
 MCNInc <- function() {
@@ -6089,7 +6089,7 @@ MCNIn <- function() {
 	return(MCNIn_o)
 }
 MCNCurtail <- function() {
-	MCNCurtail_0 <- min(DemMCN, max(IflowMCN - IHOut() - PROut() - MCNInc(), 0))
+	MCNCurtail_0 <- min(DemMCN, max(IflowMCN - MCNIn(), 0))
 	if (curtail_option == 1) {
 		MCNCurtail_o <- ifelse(MCNCurtail_0 > 0, CurtMCN, 0)
 	} else if (curtail_option == 2) {
@@ -6105,7 +6105,7 @@ MCNCurtail <- function() {
 	return(MCNCurtail_o)
 }
 MCNInstreamShortfall <- function() {
-	MCNInstreamShortfall_o <- max(IflowMCN - IHOut() - PROut() - MCNInc(), 0)
+	MCNInstreamShortfall_o <- max(IflowMCN - MCNIn(), 0)
 	return(MCNInstreamShortfall_o)
 }
 MCNPrelim <- function() {
