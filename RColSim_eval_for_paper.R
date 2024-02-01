@@ -95,8 +95,8 @@ eval_plot <- function(flow, timestep) {
   }
 }
 
-svg(paste0(plot_dir, "reservoir_signatures.svg"), width=10, height=12, pointsize=16)
-par(mfrow=c(4,2), mar=c(3,5,5,3), las=2, cex.main=1.2, font.main=1)
+svg(paste0(plot_dir, "reservoir_signatures.svg"), width=10, height=12, pointsize=20)
+par(mfrow=c(4,2), mar=c(3,5,3,1), las=2, cex.main=1.1, font.main=1)
 sim <- sim_sig_mean_monthly
 obs <- obs_sig_mean_monthly
 res_names <- c("Mica", "Hugh Keenleyside", "Libby", "Duncan", "Brownlee", "Dworshak", "Grand Coulee", "Hungry Horse")
@@ -105,32 +105,34 @@ for (s in 1:length(res_short_names)) {
 	stn <- res_short_names[s]
 	ymax <- 1.4 * max(c(sim[,stn]), obs[,stn]) 
 	ymin <- 1.4 * min(c(sim[,stn]), obs[,stn])
-	title_n <- paste0("Obs. vs Sim. Reservoir Signature at ", res_names[s])
+	title_n <- paste0("Reservoir Signature at ", res_names[s])
 	plot(obs[,stn] ~ obs[,1], ylim=c(ymin, ymax), type='l', ylab="Change in Storage (million acre-ft)", main=title_n, xaxt="n", xlab="")
 	grid(col="snow2", lty="solid")
 	axis(1, at=1:12, labels=month_names)
-	lines(obs[,stn] ~ obs[,1], lty=1, col="black")
-	lines(sim[,stn] ~ sim[,1], lty=2, col="red")
+	lines(obs[,stn] ~ obs[,1], lty=1, col="black", lwd=2)
+	lines(sim[,stn] ~ sim[,1], lty=2, col="red", lwd=2)
+	legend("bottomright", legend=c("Observed", "Simulated"), lty=c(1,2), lwd=c(2,2), col=c("black", "red"), cex=0.9, bty="n")
 }
 dev.off()
 			
 	
-png(paste0(plot_dir, "reservoir_signatures.png"), res=400, width=4000, height=5000, units="px", pointsize=16)
-par(mfrow=c(4,2), mar=c(3,5,5,3), las=2, cex.main=1.2, font.main=1)
+png(paste0(plot_dir, "reservoir_signatures.png"), res=400, width=4000, height=5000, units="px", pointsize=20)
+par(mfrow=c(4,2), mar=c(3,5,3,1), las=2, cex.main=1.1, font.main=1)
 sim <- sim_sig_mean_monthly
 obs <- obs_sig_mean_monthly
-res_names <- c("Mica", "Hugh Keenleyside", "Libby", "Duncan", "Brownlee", "Dworshak", "Grand Coulee", "Hungry Horse")
+res_names <- c("Mica", "Keenleyside", "Libby", "Duncan", "Brownlee", "Dworshak", "Grand Coulee", "Hungry Horse")
 res_short_names <- c("MICAA", "ARROW", "LIBBY", "DUNCA", "BROWN", "DWORS", "GCOUL", "FLASF")
 for (s in 1:length(res_short_names)) {
 	stn <- res_short_names[s]
 	ymax <- 1.4 * max(c(sim[,stn]), obs[,stn]) 
 	ymin <- 1.4 * min(c(sim[,stn]), obs[,stn])
-	title_n <- paste0("Obs. vs Sim. Reservoir Signature at ", res_names[s])
+	title_n <- paste0("Reservoir Signature at ", res_names[s])
 	plot(obs[,stn] ~ obs[,1], ylim=c(ymin, ymax), type='l', ylab="Change in Storage (million acre-ft)", main=title_n, xaxt="n", xlab="")
 	grid(col="snow2", lty="solid")
 	axis(1, at=1:12, labels=month_names)
-	lines(obs[,stn] ~ obs[,1], lty=1, col="black")
-	lines(sim[,stn] ~ sim[,1], lty=2, col="red")
+	lines(obs[,stn] ~ obs[,1], lty=1, col="black", lwd=2)
+	lines(sim[,stn] ~ sim[,1], lty=2, col="red", lwd=2)
+	legend("bottomright", legend=c("Observed", "Simulated"), lty=c(1,2), lwd=c(2,2), col=c("black", "red"), cex=0.9, bty="n")
 }
 dev.off()
 

@@ -1,0 +1,5 @@
+RColSim_WD /home/myourek/RColSimV1
+Flow_Input_File inputs/ToRColSim_scenario_historical_supply_and_demand.txt
+Output_Folder output/supply_and_demand/bcc-csm1-1/historical/
+simulation_start_year 1950
+simulation_end_date 2005-09-25

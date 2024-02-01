@@ -1,4 +1,4 @@
-RColSim_WD /home/myourek/RColSim_v1
+RColSim_WD /home/myourek/RColSimV1
 Flow_Input_File inputs/ToRColSim_scenario_baseline_supply_and_demand.txt
 Output_Folder output/supply_and_demand/Historical_baseline/
 simulation_start_year 1979

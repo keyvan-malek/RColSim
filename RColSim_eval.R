@@ -1,20 +1,19 @@
-setwd("~/RColSim_v1/output/")
 run_type <- "supply_and_demand"
-plot_dir <- paste0(getwd(), "/plots/", run_type, "/")
+plot_dir <- paste0(getwd(), "/output/plots/", run_type, "/")
 library(xts)
 
 seconds_in_month = 86400 * c(31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) # Jan-Dec
 cfsToAcFtMonth = 1 / 43560 * seconds_in_month # convert from cfs to AcFt/Month
 
-obs_reg <- read.csv("daily_historical_flow_2018.csv", stringsAsFactors=F)
+obs_reg <- read.csv("output/daily_historical_flow_2018.csv", stringsAsFactors=F)
 obs_reg$DATE <- as.Date(obs_reg$Date)
-obs_nat <- read.csv("NRNI_2020_daily.csv", stringsAsFactors=F) 
+obs_nat <- read.csv("output/NRNI_2020_daily.csv", stringsAsFactors=F) 
 obs_nat$DATE <- as.Date(obs_nat$Date, "%d-%B-%y")
-nat_replacement <- read.csv("nat_flow_replacement.csv")
+nat_replacement <- read.csv("output/nat_flow_replacement.csv")
 nat_replacement$DATE <- as.Date(paste(nat_replacement$Year, nat_replacement$Month, "01", sep="-"))
-sim_reg <- read.table(paste0(run_type, "/Historical_baseline/dams_out.txt"), header=T, stringsAsFactors=F)
+sim_reg <- read.table(paste0("output/", run_type, "/Historical_baseline/dams_out.txt"), header=T, stringsAsFactors=F)
 sim_reg[,-c(1:5)] <- sim_reg[,-c(1:5)] / 13.8843
-sim_nat <- read.table(paste0("~/RColSim_v1/Preliminary/output/", run_type, "/Historical_baseline/supply_baseline.txt"), header=T) 
+sim_nat <- read.table(paste0("Preliminary/output/", run_type, "/Historical_baseline/supply_baseline.txt"), header=T) 
 sim_nat[,-c(1:4)] <- sim_nat[,-c(1:4)] / 13.8843
 sim_nat$DATE <- as.Date(paste(sim_nat$Years, sim_nat$Months, sim_nat$Days, sep="-"))
 stns <- names(sim_nat)[-c(1:4)][which(names(sim_nat)[-c(1:4)] %in% names(obs_reg) & names(sim_nat)[-c(1:4)] %in% names(sim_reg))]
@@ -44,8 +43,6 @@ for(i in 1:length(vars)) {
 	assign(paste(var_names[i], "weekly", sep="_"), weekly_data[,-c(1:2)])
 	assign(paste(var_names[i], "monthly", sep="_"), data.frame(DATE=ts_mo$DATE, aggregate(weekly_data[-c(1:3)], list(weekly_data$Months, weekly_data$Years), mean)[,-c(1:2)]))
 }
-#nat_replacement <- subset(nat_replacement, DATE>=start_wk & DATE<=end_wk)
-#obs_nat_monthly[,c("BROWN", "LGOOS", "LMONU", "LGRAN")] <- nat_replacement[,c("BROWN", "LGOOS", "LMONU", "LGRAN")]
 
 obs_sig_monthly <- cbind(DATE=ts_mo$DATE, obs_reg_monthly[,-1] - obs_nat_monthly[,-1])
 sim_sig_monthly <- cbind(DATE=ts_mo$DATE, sim_reg_monthly[,-1] - sim_nat_monthly[,-1])
