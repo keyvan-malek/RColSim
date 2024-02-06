@@ -420,4 +420,4 @@ GIF[2,2] <- paste0(indir, "ToRColSim_scenario_", scr, "_", run_type, ".txt")
 GIF[3,2] <- outdir
 GIF[4,2] <- sim_start_year
 GIF[5,2] <- as.character(sim_end_date)
-write.table(GIF, paste0("inputs/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=F)
+write.table(GIF, paste0("inputs/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=T)
