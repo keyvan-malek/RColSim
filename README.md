@@ -50,7 +50,7 @@ _> Rscript supply_demand.R “Historical_baseline” “supply_and_demand”_<br
 _> Rscript flow_to_ColSim.R “Historical_baseline” “supply_and_demand”_<br>
 _> Rscript RColSim_main.R “Historical_baseline” “supply_and_demand”_<br>
 
-<img style="float: center;" src="Figure2-StructureofCode.png" width="600">
+<img style="float: center;" src="figures/Figure2-StructureofCode.png" width="600">
 
 
 ## 3- Running RColSim on a computing cluster
@@ -84,7 +84,7 @@ Rule curves designate a target reservoir water level or volume throughout the ye
 ### 3) Flow Targets
 Most reservoirs have designated flow targets to reduce the negative impact of dams on navigation or anadromous fish spawning, rearing, and migration.  The flow targets included in RColSim are listed in Table 1.
 
-<img style="float: center;" src="FlowTarget_Table.png" width="600">
+<img style="float: center;" src="figures/FlowTarget_Table.png" width="600">
 
 
 ## Script 1: Assembling of Inputs
@@ -123,6 +123,35 @@ Weekly surface water demands (withdrawals for municipal water and irrigation, ex
 
 The flow_to_ColSim.R script automatically populates the global input file. The user may either change the script or edit the file to change these variables.
 
+
+<img style="float: center;" src="figures/Figure4_CRB_Dams.svg" width="600">
+
+Script 3: Main RColSim program
+
+Once the input files have been created, the only required step remaining is to run the script, RColSim_main.R. The  RColSim_main.R script begins by loading the global input file. Then, required scripts are loaded. These are:
+
+	1) load_functions.R
+	2) read_rule_curves.R
+	3) switches.R
+	4) dataframes.R
+	5) PMFs.R
+	6) VIC_Data.R
+
+load_functions.R - Functions pertaining to the calculation of dam inflows, outflows, rule curves, and hydropower generation for each of the 45 dams simulated in RColSim. Each dam has its own set of functions, which depends on its unique management objectives. The typical storage reservoir has functions governing both its storage volume at a given week of the year, as well as the release required to meet environmental flow and hydropower targets. Run-of-river dams have comparatively few functions because they have limited or no storage. It is assumed that for run-of-river dams, inflow equals outflow. 
+
+read_rule_curves.R – Reads in the text file inputs from the default_rule_curves subdirectory. These text files give the rule curve and target flow values for each week of the year under various flow conditions. The main program uses the cumulative runoff volumes and residual inflows from the input file to interpolate between different flow conditions (represented by columns) in the rule curve text files. 
+
+switches.R – Switches and controls that affect the priority of dam operational objectives and allow the user to control which variables are written to output. See section A.5 for a description of the implemented options. 
+
+dataframes.R - Initializes the output dataframes. The user can add/remove columns to a given dataframe, define a new dataframe, or delete an existing dataframe to customize the output. Note that  water_df, and energy_df, are essential to the code and should not be deleted.
+
+PMFs.R - Functions for calculating model performance metrics. 
+
+VIC_Data.R - Reads the variables from the input file at each time step into the local environment.
+
+Once the necessary scripts are loaded into the R environment, an option is presented to begin a new simulation. If NEW_SIMULATION == TRUE on line 96, then the output files will be overwritten. The default is set to TRUE. Next, the main program begins the simulation. In the first time step, the initialize_model.R script is executed. This script initializes the storage volume of all reservoirs and runs the first timestep of the simulation. The main program executes all the remaining timesteps. At the beginning of each timestep, a set of common variables is initialized (L120-124). These variables are shared among many functions. They are calculated by the first function that invokes them and treated as a constant by subsequent function calls that use their value for calculating other variables. This ensures that values used by multiple functions only need to be calculated once per time step, which significantly enhances computational speed. 
+	The core section of the main program computes reservoir releases and regulated inflows for each of the storage reservoirs, and inflow/outflows for each of the run-of-river dams. Inflow to a downstream dam (Q_in) is calculated as the sum of outflow from immediately upstream dams (Q_out) and incremental flow (Q_inc) (see Eq. 2). Incremental flow is the unregulated streamflow generated between the downstream dam and all immediately upstream dams (Eq. 3). Table 2 gives the upstream/downstream positioning of the dams simulated in RColSim.
+
 <p align="center">
 
 <img style="float: right;" src="paper/RColSim_dams.png" width="700">
@@ -131,22 +160,6 @@ The flow_to_ColSim.R script automatically populates the global input file. The u
 
 </p>
 
-Inflow to a downstream dam is calculated as the sum of outflow from immediate upstream dams plus incremental supply with demands removed (Eq. 1). Incremental supply is the difference between supply to a downstream dam and supply to all immediately upstream dams. Water demand corresponds with the same drainage area as incremental supply and is included in the input file. The orientation of dams represented in RColSim is shown in Table 1.
-
-
-$$
-
-Inflow_{downstream} = Flow_{incremental} + Demand_{incremental} + \sum{Outflow_{upstream}}
-
-$$
-
-<p align="center">
-
-<img style="float: right;" src="paper/RColSim_Inflow_points.png" width="700">
-
-*Upstream-downstream orientation of dams in RColSim.* 
-
-</p>
 
 ### 3-	Update the Global Input File 
 A global input file exists in the “RColSim/inputs” folder which needs to be updated. The current file is called “Global_Input_File_Historical_baseline”, however, users can update the name and address of this file and correct line 36 of the “RColSim.R” file accordingly. The current global input file can be found here: “RColSim/inputs/Global_Input_File_Historical_baseline.txt”
@@ -174,8 +187,6 @@ Here, the model user specifies the start date of RColSim input file.
 -	**input_end_date** : 
 End date of RColSim input file.
 
-### 4- Other Model Inputs
-The users that are only interested in running the baseline scenarios of RColSim do not need to adjust any other input files. However, there are some modeling options that can be specified in “Switches.R”. For example, users can specify if they want to conduct the simulation under the perfect forecast condition or predefined refill curves by setting “PfctForecast_Refill_Targ” or “SQuo_Refill_Targ” values to 1. There are also additional inputs that can be potentially changed for specific purposes. Examples of these inputs include rule curves that are available in “default_rule_curves”. 
 
 
 ## License
