@@ -51,7 +51,6 @@ _> Rscript flow_to_ColSim.R “Historical_baseline” “supply_and_demand”_<b
 _> Rscript RColSim_main.R “Historical_baseline” “supply_and_demand”_<br>
 
 
-
 <p align="center">
 
 <img style="float: center;" src="figures/Figure2-StructureofCode.png" width="700">
@@ -102,9 +101,9 @@ Most reservoirs have designated flow targets to reduce the negative impact of da
 
 ## Script 1: Assembling of Inputs
 
-The first script that should be run when preparing an RColSim simulation is supply_demand.R. This script converts model-simulated irrigation demand and runoff to a weekly timeseries of surface water consumptive demand and natural streamflow (i.e., flow without the influenced dams or water withdrawals). The natural streamflow input was constructed from the grid-scale runoff and baseflow simulations of VIC by routing flow to the inlet of each dam, using an algorithm based on Lohmann et al. (1996). The routed flows were subsequently bias-corrected to the no regulation, no irrigation dataset (NRNI) provided by the Bonneville Power Administration and produced by the Army Corps of Engineers. The bias correction procedure is described in Snover et al. (2003). 
-The consumptive water demand is assumed to come from two primary sources, agriculture (i.e. irrigation) and residential use. Irrigation demands were simulated using VIC CropSyst, which provides “top-of-crop” water demands (i.e. water that is actually delivered to the field). The fraction of irrigation water coming from a surface water vs groundwater source is estimated from water rights data, watershed plans, and other literature. Refer to Yourek et al. (2023) for a more detailed discussion of how water demand and natural streamflow were derived for the Columbia River Basin. The grid-scale top-of-crop irrigation demands and residential water demands were aggregated to drainage areas that correspond with a flow target control point, an irrigation project, or the drainage area between an upstream dam and the nearest downstream dam. A crosswalk between grid cell and drainage area is included in the file, *misc/station_matches_for_pod_file_2023.txt* for reference. The file, *misc/all_drainages.csv* gives metadata for these drainage areas. 
-The supply_demand.R script also calculates curtailment of water rights in tributaries of Washington State with an instream flow rule and adjusts water demand accordingly. Interruptible curtailment of water rights occurs whenever streamflow falls below regulatory minimum flows that are set primarily for the benefit of fish. When this occurs, those with a water right junior to the flow rule are prohibited from diverting until the streamflow once again exceeds the minimum flow. Next, the script aggregates the demand in each drainage to the drainages shown in Fig. 3, which represent the incremental drainage areas between a downstream dam and the nearest upstream dam(s). Refer to the file, inputs/station_mapping for a mapping of the RColSim drainages (first column) to the demand drainages (second column). Lastly, the script calculates the demand from interruptible water rights along the mainstem Columbia River. These water rights are curtailed only in rare circumstances.
+The first script that should be run when preparing an RColSim simulation is supply_demand.R. This script converts model-simulated irrigation demand and runoff to a weekly time-series of surface water consumptive demand and natural streamflow (i.e., flow without the influenced dams or water withdrawals). The natural streamflow input was constructed from the grid-scale runoff and baseflow simulations of VIC by routing flow to the inlet of each dam, using an algorithm based on Lohmann et al. (1996). The routed flows were subsequently bias-corrected to the no regulation, no irrigation dataset (NRNI) provided by the Bonneville Power Administration and produced by the Army Corps of Engineers. The bias correction procedure is described in Snover et al. (2003). 
+The consumptive water demand is assumed to come from two primary sources, agriculture (i.e. irrigation) and residential use. Irrigation demands were simulated using VIC CropSyst, which provides “top-of-crop” water demands (i.e. water that is delivered to the field). The fraction of irrigation water coming from a surface water vs groundwater source is estimated from water rights data, watershed plans, and other literature. Refer to Yourek et al. (2023) for a more detailed discussion of how water demand and natural streamflow were derived for the Columbia River Basin. The grid-scale top-of-crop irrigation demands and residential water demands were aggregated to drainage areas that correspond with a flow target control point, an irrigation project, or the drainage area between an upstream dam and the nearest downstream dam. A crosswalk between grid cell and drainage area is included in the file, *misc/station_matches_for_pod_file_2023.txt* for reference. The file, *misc/all_drainages.csv* gives metadata for these drainage areas. 
+The supply_demand.R script also calculates curtailment of water rights in tributaries of Washington State with an instream flow rule and adjusts water demand accordingly. Interruptible curtailment of water rights occurs whenever streamflow falls below regulatory minimum flows that are set primarily for the benefit of fish. When this occurs, those with a water right junior to the flow rule are prohibited from diverting until the streamflow once again exceeds the minimum flow. Next, the script aggregates the demand in each drainage to the drainages shown in Fig. 2, which represent the incremental drainage areas between a downstream dam and the nearest upstream dam(s). Refer to the file, inputs/station_mapping for a mapping of the RColSim drainages (first column) to the demand drainages (second column). Lastly, the script calculates the demand from interruptible water rights along the mainstem Columbia River. These water rights are curtailed only in rare circumstances.
 
 ## Script 2: Generating the RColSim input file
 
@@ -115,27 +114,23 @@ After *supply_demand.R* is run, the second script to execute is flow_to_ColSim.R
 3)	Residual inflow/Cumulative runoff volume
 
 ### 1) Unregulated streamflow
-	Weekly timeseries of unregulated streamflow is calculated by subtracting the surface water demands from the natural streamflow at the inlet of each of the dams shown in Fig. 3. The water demand upstream of a dam is equal to the sum of demand in all upstream incremental drainage areas (light gray boundaries) in Fig. 3. 
+Weekly timeseries of unregulated streamflow is calculated by subtracting the surface water demands from the natural streamflow at the inlet of each of the dams shown in Fig. 2. The water demand upstream of a dam is equal to the sum of demand in all upstream incremental drainage areas (light gray boundaries) in Fig. 2. 
  
 ### 2) Variable refill curve
-Some of the dams have a variable refill curve that guides reservoir refill. The variable refill curve allows a deeper draft than permitted by the assured refill curve, while assuring that the dam will refill by its target date with a high degree of confidence. The computation of a variable refill curve in the flow_to_ColSim.R script consists of recursively solving the storage volume, beginning at the target refill date and working backward. ### 2-	Preparation of a weekly streamflow and surface water demand input file for RColSim:
-The current version of RColSim works at a weekly time step. Therefore, the streamflow inputs to the model need to be aggregated to a weekly time step. An example input streamflow dataset is included in the following repository:
-“/inputs/Supply_to_RColSim/ToRColSim_scenario_baseline_with_curtailment.txt”
-The unregulated water supply input columns are designated by the “PriVIC” prefix. These flows should be routed to each of the dams if you are including your own water supply data. Alternatively, the no-regulation, no-irrigation (NRNI) dataset from the Bonneville Power Administration (BPA) can be used.
-Weekly surface water demands (withdrawals for municipal water and irrigation, excluding conveyance losses) are also included in the RColSim input file. The aggregation area for these demands corresponds with the drainage areas between the dam indicated after the “DemVIC” prefix and the nearest upstream dam. The water demand in the DemVIC columns was calculated from VIC-CropSyst simulated irrigation demands, not including conveyance losses, as well as surface water municipal demands where those data were available.  The model subtracts water demand from naturalized flow in the incremental drainage area between each dam and its nearest upstream neighbors. These drainage areas are shown in Figure 1. If the user wishes to run RColSim with naturalized flows (demands already removed), the demand columns in the input file need to be replaced with zeros to avoid double-counting water demand. 
+Some of the dams have a variable refill curve that guides reservoir refill. The variable refill curve allows a deeper draft than permitted by the assured refill curve, while assuring that the dam will refill by its target date with a high degree of confidence. The computation of a variable refill curve in the *flow_to_ColSim.R* script consists of recursively solving the storage volume, beginning at the target refill date and working backward. 
 
 ### 3) Residual inflow/Cumulative runoff volume
 The flood control curves utilize either residual inflow or cumulative runoff volume to select the curve representing the appropriate relationship between reservoir volume and week of the year. Residual inflow is the remaining volume of unregulated flow to enter the reservoir by the target refill date. It is calculated as Q^t summed over all the timesteps from t to the refill date. Cumulative runoff volume is the total unregulated streamflow volume that has been forecasted to enter the reservoir over a specified period, usually April through August. Residual inflow is used primarily in conjunction with the Upper and Middle Snake River reservoirs, while cumulative runoff volume is used in conjunction with the other reservoirs.
 
-In addition to the primary RColSim inputs discussed above, flow_to_ColSim.R generates the irrigation demands for the Upper Snake drainages, which are used for estimating irrigation withdrawals for the Minidoka, Boise, Payette, and Upper Snake irrigation projects in Southern Idaho. The input file also includes interruptible demands and instream flow rules for computing curtailment along the Columbia mainstem, and return flows from the Columbia Basin Project entering near Wanapum, Priest Rapids, and McNary dams. Finally, the script generates the global input file. The global input file has the following values:
+In addition to the primary RColSim inputs discussed above, *flow_to_ColSim.R* generates the irrigation demands for the Upper Snake drainages, which are used for estimating irrigation withdrawals for the Minidoka, Boise, Payette, and Upper Snake irrigation projects in Southern Idaho. The input file also includes interruptible demands and instream flow rules for computing curtailment along the Columbia mainstem, and return flows from the Columbia Basin Project entering near Wanapum, Priest Rapids, and McNary dams. Finally, the script generates the global input file. The global input file has the following values:
 
-RColSim_WD – The parent directory for the RColSim model. 
-Flow_Input_File – The main input file for RColsim.
-Output_Folder – The folder where the program writes the output files.
-simulation_start_year – The first year of the simulation. The program always begins the first week in August.
-Simulation_end_date – The date the simulation ends. This value needs to be an actual date given in the format: yyyy-mm-dd.
+**RColSim_WD** – The parent directory for the RColSim model.<br>
+**Flow_Input_File** – The main input file for RColsim.<br>
+**Output_Folder** – The folder where the program writes the output files.<br>
+**Simulation_start_year** – The first year of the simulation. The program always begins the first week in August.<br>
+**Simulation_end_date** – The date the simulation ends. This value needs to be an actual date given in the format: yyyy-mm-dd.<br>
 
-The flow_to_ColSim.R script automatically populates the global input file. The user may either change the script or edit the file to change these variables.
+The *flow_to_ColSim.R* script automatically populates the global input file. The user may either change the script or edit the file to change these variables.
 
 
 <p align="center">
@@ -157,26 +152,31 @@ Once the input files have been created, the only required step remaining is to r
 
 load_functions.R - Functions pertaining to the calculation of dam inflows, outflows, rule curves, and hydropower generation for each of the 45 dams simulated in RColSim. Each dam has its own set of functions, which depends on its unique management objectives. The typical storage reservoir has functions governing both its storage volume at a given week of the year, as well as the release required to meet environmental flow and hydropower targets. Run-of-river dams have comparatively few functions because they have limited or no storage. It is assumed that for run-of-river dams, inflow equals outflow. 
 
-read_rule_curves.R – Reads in the text file inputs from the default_rule_curves subdirectory. These text files give the rule curve and target flow values for each week of the year under various flow conditions. The main program uses the cumulative runoff volumes and residual inflows from the input file to interpolate between different flow conditions (represented by columns) in the rule curve text files. 
+**read_rule_curves.R** – Reads in the text file inputs from the default_rule_curves subdirectory. These text files give the rule curve and target flow values for each week of the year under various flow conditions. The main program uses the cumulative runoff volumes and residual inflows from the input file to interpolate between different flow conditions (represented by columns) in the rule curve text files. 
 
-switches.R – Switches and controls that affect the priority of dam operational objectives and allow the user to control which variables are written to output. See section A.5 for a description of the implemented options. 
+**switches.R** – Switches and controls that affect the priority of dam operational objectives and allow the user to control which variables are written to output. See section A.5 for a description of the implemented options. 
 
-dataframes.R - Initializes the output dataframes. The user can add/remove columns to a given dataframe, define a new dataframe, or delete an existing dataframe to customize the output. Note that  water_df, and energy_df, are essential to the code and should not be deleted.
+**dataframes.R** - Initializes the output dataframes. The user can add/remove columns to a given dataframe, define a new dataframe, or delete an existing dataframe to customize the output. Note that  water_df, and energy_df, are essential to the code and should not be deleted.
 
-PMFs.R - Functions for calculating model performance metrics. 
+**PMFs.R** - Functions for calculating model performance metrics. 
 
-VIC_Data.R - Reads the variables from the input file at each time step into the local environment.
+**VIC_Data.R** - Reads the variables from the input file at each time step into the local environment.
 
-Once the necessary scripts are loaded into the R environment, an option is presented to begin a new simulation. If NEW_SIMULATION == TRUE on line 96, then the output files will be overwritten. The default is set to TRUE. Next, the main program begins the simulation. In the first time step, the initialize_model.R script is executed. This script initializes the storage volume of all reservoirs and runs the first timestep of the simulation. The main program executes all the remaining timesteps. At the beginning of each timestep, a set of common variables is initialized (L120-124). These variables are shared among many functions. They are calculated by the first function that invokes them and treated as a constant by subsequent function calls that use their value for calculating other variables. This ensures that values used by multiple functions only need to be calculated once per time step, which significantly enhances computational speed. 
-	The core section of the main program computes reservoir releases and regulated inflows for each of the storage reservoirs, and inflow/outflows for each of the run-of-river dams. Inflow to a downstream dam (Q_in) is calculated as the sum of outflow from immediately upstream dams (Q_out) and incremental flow (Q_inc) (see Eq. 2). Incremental flow is the unregulated streamflow generated between the downstream dam and all immediately upstream dams (Eq. 3). Table 2 gives the upstream/downstream positioning of the dams simulated in RColSim.
+Once the necessary scripts are loaded into the R environment, an option is presented to begin a new simulation. If NEW_SIMULATION == TRUE on line 96, then the output files will be overwritten. The default is set to TRUE. Next, the main program begins the simulation. In the first time step, the initialize_model.R script is executed. This script initializes the storage volume of all reservoirs and runs the first timestep of the simulation. The main program executes all the remaining timesteps. At the beginning of each timestep, a set of common variables is initialized (L120-124). These variables are shared among many functions. They are calculated by the first function that invokes them and treated as a constant by subsequent function calls that use their value for calculating other variables. This ensures that values used by multiple functions only need to be calculated once per time step, which significantly enhances computational speed.<be>
 
 
 
 
 ## License
 
-```
-	License: GNU General Public License version 3
-	
-	
-```
+<div align="center"><b>GNU GENERAL PUBLIC LICENSE</b> </div>
+<div align="center"><b>Version 3, 29 June 2007</b> </div>
+
+<p align="center">
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+</p>
+
+ 
+
