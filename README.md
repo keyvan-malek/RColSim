@@ -11,15 +11,15 @@ Keyvan Malek (keyvanmalek@gmail.com), Matthew Yourek (matthew.yourek@wsu.edu), a
 
 All the R scripts used by the model are in this GitHub directory. These are:
 
-1.	*VIC_data.R* – Reads the input file at the beginning of each timestep and assigns the values from the RColSim input file (e.g. ToRColSim_scenario_baseline_supply_and_demand.txt) to each of the variables listed in section A.1.
-2.	*switches.R* – Provides switches and controls the user can change to adjust the priority of objectives and customize model output (see section A.5).
+1.	*VIC_data.R* – Reads the input file at the beginning of each timestep and assigns the values from the RColSim input file (e.g. ToRColSim_scenario_baseline_supply_and_demand.txt) to each of the variables listed in section A.1 of the user manual.
+2.	*switches.R* – Provides switches and controls the user can change to adjust the priority of objectives and customize model output (see section A.5 of user manual).
 3.	*supply_demand.R* – Aggregates the streamflow and water demand input data for further processing and assembling of the main RColSim input file.
 4.	*read_rule_curves.R* – Reads in the input rule curve and flow target input files.
 5.	*RColSim_main.R* – The script that runs the RColSim model.
 6.	*RColSim_eval.R* – Generates plots for model evaluation.
 7.	*PMFs.R* – Functions for computing performance metrics that indicate the degree to which reservoir objectives were or were not satisfied.
 8.	*load_functions_input_file.R* – Functions for preparing the RColSim input file.
-9.	*load_functions.R* – Functions called by the main RColSim program (see section A.4).
+9.	*load_functions.R* – Functions called by the main RColSim program (see section A.4 of user manual).
 10.	*initialize_model.R* ¬– Executes the first timestep of the RColSim model.
 11.	*flow_to_ColSim.R* – Generates the RColSim input file and the global input file.
 12.	*dataframes.R* – Initializes dataframes of output variables.
@@ -85,7 +85,7 @@ Unregulated streamflow is the flow that has not been altered by the operation of
 ## 2) Rule Curves
 Rule curves designate a target reservoir water level or volume throughout the year to achieve objectives such as flood control, irrigation, and hydropower generation. Generally, a rule curve is either an upper limit or a lower limit. The upper limit guides flood control operation, ensuring that enough storage space is available to reduce flood volumes. The lower limits help maintain enough water in the reservoir so that firm energy loads can be met throughout the year and the reservoirs refill by their target refill dates. The variable refill curve, assured refill curve, critical rule curve, and operating rule curve lower limits all fit into this category.
 	The target storage volumes for each rule curve are read from diagrams of required storage on the y axis and date on the x axis. A set of curves gives the required storage for different forecasted inflow conditions. An example is the storage reservation diagrams used for guiding the evacuation of reservoirs for flood control. The Army Corps of Engineers, Columbia Basin Water Management Division maintains a repository of such diagrams at https://www.nwd-wc.usace.army.mil/cafe/forecast/SRD/srd.htm.
-	In RColSim, the rule curves are supplied in the form of text files in which rows represent week of the year and columns represent the volume of water stored in the reservoir. In transcribing the storage reservation diagrams, we interpolated between the months to derive weekly values, and we converted from required storage space to water stored in the reservoir by subtracting storage space from the full pool volume. Unlike the other rule curves, the variable refill curve is computed using forecasted inflows and assumed releases. The procedure for computing variable refill curves is discussed in section 2.1.2.
+	In RColSim, the rule curves are supplied in the form of text files in which rows represent week of the year and columns represent the volume of water stored in the reservoir. In transcribing the storage reservation diagrams, we interpolated between the months to derive weekly values, and we converted from required storage space to water stored in the reservoir by subtracting storage space from the full pool volume. Unlike the other rule curves, the variable refill curve is computed using forecasted inflows and assumed releases. The procedure for computing variable refill curves is discussed in section 2.1.2 of the user manual.
 
 ## 3) Flow Targets
 Most reservoirs have designated flow targets to reduce the negative impact of dams on navigation or anadromous fish spawning, rearing, and migration.  The flow targets included in RColSim are listed in Table 1.
@@ -120,7 +120,7 @@ Weekly timeseries of unregulated streamflow is calculated by subtracting the sur
 Some of the dams have a variable refill curve that guides reservoir refill. The variable refill curve allows a deeper draft than permitted by the assured refill curve, while assuring that the dam will refill by its target date with a high degree of confidence. The computation of a variable refill curve in the *flow_to_ColSim.R* script consists of recursively solving the storage volume, beginning at the target refill date and working backward. 
 
 ### 3) Residual inflow/Cumulative runoff volume
-The flood control curves utilize either residual inflow or cumulative runoff volume to select the curve representing the appropriate relationship between reservoir volume and week of the year. Residual inflow is the remaining volume of unregulated flow to enter the reservoir by the target refill date. It is calculated as unregulated inflow summed over all the timesteps from t to the refill date. Cumulative runoff volume is the total unregulated streamflow volume that has been forecasted to enter the reservoir over a specified period, usually April through August. Residual inflow is used primarily in conjunction with the Upper and Middle Snake River reservoirs, while cumulative runoff volume is used in conjunction with the other reservoirs.
+The flood control curves utilize either residual inflow or cumulative runoff volume to select the curve representing the appropriate relationship between reservoir volume and week of the year. Residual inflow is the remaining volume of unregulated flow to enter the reservoir by the target refill date. It is calculated as unregulated inflow summed over all the timesteps from the current timestep to the refill date. Cumulative runoff volume is the total unregulated streamflow volume that has been forecasted to enter the reservoir over a specified period, usually April through August. Residual inflow is used primarily in conjunction with the Upper and Middle Snake River reservoirs, while cumulative runoff volume is used in conjunction with the other reservoirs.
 
 In addition to the primary RColSim inputs discussed above, *flow_to_ColSim.R* generates the irrigation demands for the Upper Snake drainages, which are used for estimating irrigation withdrawals for the Minidoka, Boise, Payette, and Upper Snake irrigation projects in Southern Idaho. The input file also includes interruptible demands and instream flow rules for computing curtailment along the Columbia mainstem, and return flows from the Columbia Basin Project entering near Wanapum, Priest Rapids, and McNary dams. Finally, the script generates the global input file. The global input file has the following values:
 
@@ -135,7 +135,7 @@ The *flow_to_ColSim.R* script automatically populates the global input file. The
 
 <p align="center">
 <img style="float: center;" src="figures/Figure4_CRB_Dams.svg" width="600">
-<div align="center"><i>Fig. 2. Incremental drainage areas for each dam simulated in RColSim.</i> </div>
+<div align="center"><i>Fig. 2. Incremental drainage area for each dam simulated in RColSim.</i> </div>
 
 </p>
 
@@ -150,11 +150,11 @@ Once the input files have been created, the only required step remaining is to r
 	5) PMFs.R
 	6) VIC_Data.R
 
-load_functions.R - Functions pertaining to the calculation of dam inflows, outflows, rule curves, and hydropower generation for each of the 45 dams simulated in RColSim. Each dam has its own set of functions, which depends on its unique management objectives. The typical storage reservoir has functions governing both its storage volume at a given week of the year, as well as the release required to meet environmental flow and hydropower targets. Run-of-river dams have comparatively few functions because they have limited or no storage. It is assumed that for run-of-river dams, inflow equals outflow. 
+**load_functions.R** - Functions pertaining to the calculation of dam inflows, outflows, rule curves, and hydropower generation for each of the 45 dams simulated in RColSim. Each dam has its own set of functions, which depends on its unique management objectives. The typical storage reservoir has functions governing both its storage volume at a given week of the year, as well as the release required to meet environmental flow and hydropower targets. Run-of-river dams have comparatively few functions because they have limited or no storage. It is assumed that for run-of-river dams, inflow equals outflow. 
 
 **read_rule_curves.R** – Reads in the text file inputs from the default_rule_curves subdirectory. These text files give the rule curve and target flow values for each week of the year under various flow conditions. The main program uses the cumulative runoff volumes and residual inflows from the input file to interpolate between different flow conditions (represented by columns) in the rule curve text files. 
 
-**switches.R** – Switches and controls that affect the priority of dam operational objectives and allow the user to control which variables are written to output. See section A.5 for a description of the implemented options. 
+**switches.R** – Switches and controls that affect the priority of dam operational objectives and allow the user to control which variables are written to output. See section A.5 of the user manual for a description of the implemented options. 
 
 **dataframes.R** - Initializes the output dataframes. The user can add/remove columns to a given dataframe, define a new dataframe, or delete an existing dataframe to customize the output. Note that  water_df, and energy_df, are essential to the code and should not be deleted.
 
@@ -162,7 +162,7 @@ load_functions.R - Functions pertaining to the calculation of dam inflows, outfl
 
 **VIC_Data.R** - Reads the variables from the input file at each time step into the local environment.
 
-Once the necessary scripts are loaded into the R environment, an option is presented to begin a new simulation. If NEW_SIMULATION == TRUE on line 96, then the output files will be overwritten. The default is set to TRUE. Next, the main program begins the simulation. In the first time step, the initialize_model.R script is executed. This script initializes the storage volume of all reservoirs and runs the first timestep of the simulation. The main program executes all the remaining timesteps. At the beginning of each timestep, a set of common variables is initialized (L120-124). These variables are shared among many functions. They are calculated by the first function that invokes them and treated as a constant by subsequent function calls that use their value for calculating other variables. This ensures that values used by multiple functions only need to be calculated once per time step, which significantly enhances computational speed.<be>
+Once the necessary scripts are loaded into the R environment, an option is presented to begin a new simulation. If NEW_SIMULATION == TRUE on line 96, then the output files will be overwritten. The default is set to TRUE. Next, the main program begins the simulation. In the first timestep, the initialize_model.R script is executed. This script initializes the storage volume of all reservoirs and runs the first timestep of the simulation. The main program executes all the remaining timesteps. At the beginning of each timestep, a set of common variables is initialized (L120-124). These variables are shared among many functions. They are calculated by the first function that invokes them and treated as a constant by subsequent function calls that use their value for calculating other variables. This ensures that values used by multiple functions only need to be calculated once per time step, which significantly enhances computational speed.<be>
 
 
 
