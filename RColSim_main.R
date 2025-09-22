@@ -43,7 +43,7 @@ if (!exists("scr")) {
   run_type <- commandArgs()[7]
 }
 print(paste0("Now doing scenario: ", scr))
-GlobalFile <- read.table(paste0("inputs/GIF_", scr, "_", run_type), stringsAsFactors=F)
+GlobalFile <- read.table(paste0("inputs/global_input_files/GIF_", scr, "_", run_type), stringsAsFactors=F)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------#
@@ -83,23 +83,23 @@ N_of_TimeSteps <- nrow(date_hist_sim)
 # 5 files need to be loaded in the following order: 1- load_functions.R 2- read_rule_curves.R 3- switches.R  4- dataframes.R 5- Measures of performance
 
 # 1- LOAD ALL FUNCTIONS
-source("load_functions.R")
+source("scripts/load_functions.R")
 # 2- READ ALL INPUT FILES
-source("read_rule_curves.R")
+source("scripts/read_rule_curves.R")
 Read_Rule_Curves()
 # 3- DEFINE SWITCHES AND DEFAULTS
-source("switches.R")
+source("scripts/switches.R")
 ReadSwitches()
 # 4- CREATE DATAFRAMES
-source("dataframes.R")
+source("scripts/dataframes.R")
 initialize_output()
 # 5- LOAD PMFs
-source("PMFs.R")
+source("scripts/PMFs.R")
 # OUTPUT FILE
 OutputFolder <- GlobalFile[3,2]
 
 ###### READ INPUT DATA FOR EACH WEEK
-source("VIC_Data.R")
+source("scripts/VIC_Data.R")
 
 # ----------------- New simulation?
 #------------------- Attention!!!!!!!!!!!!!!
@@ -138,7 +138,7 @@ for (I_Week in 1:N_of_TimeSteps){
     assign(var, -9999)
   }
   # ---------------- Initialize the model
-  source("initialize_model.R")
+  source("scripts/initialize_model.R")
 } else {
   # FIND THE RIGHT TIME STEP
   week_counter <- I_Week
@@ -212,6 +212,7 @@ for (I_Week in 1:N_of_TimeSteps){
 
   dams_in$CHIEF[week_counter] <- CJIn()
   dams_out$CHIEF[week_counter] <- CJOut()
+  
   if (track_curtailment == week_counter) {
     mainstem_curtailments$CHIEF[week_counter] <- CJCurtail()
     mainstem_shortfall$CHIEF[week_counter] <- CJInstreamShortfall()
