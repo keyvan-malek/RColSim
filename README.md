@@ -175,7 +175,7 @@ Contributions are welcome. Users can clone the repository, edit the README or ot
 <div align="center"><b>MIT License</b></div>
 
 <p align="center">
-Copyright (c) [YEAR] [YOUR NAME / ORGANIZATION]
+Copyright (c) 2025
 </p>
 
 <p align="center">
