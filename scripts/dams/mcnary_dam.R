@@ -6,7 +6,7 @@
 #######################################################
 
 McNaryFlowData <- function() {
-  flow_o <- FlowMCN #+ RetMCN
+  flow_o <- FlowMCN + RetMCN
   return(flow_o)
 }
 MCNInc <- function() {
