@@ -8,9 +8,9 @@ run_type <- commandArgs()[7] ## should surface water withdrawals be considered? 
 
 ############ Load functions
 
-source("load_functions_input_file.R")
-source("load_functions.R")
-source("read_rule_curves.R")
+source("scripts/load_functions_input_file.R")
+source("scripts/load_functions.R")
+source("scripts/read_rule_curves.R")
 Read_Rule_Curves()
 
 ##########################
@@ -26,7 +26,7 @@ if (run_type == "supply_and_demand") {
 gcm <- strsplit(scr_name, "/")[[1]][1] ## The global circulation model, if future climate data are used, or Historical_baseline for historical climate data
 scr <- strsplit(scr_name, "/")[[1]][2] ## rcp4.5 or rcp8.5 for future climate scenarios
 indir <- "inputs/"
-indir2 <- paste0("Preliminary/output/", run_type, "/", gcm, "/")
+indir2 <- paste0("inputs/Preliminary/output/", run_type, "/", gcm, "/")
 stn_colsim <- read.table(paste0("inputs/miscellaneous/RColSim_stations.txt"), header=T, stringsAsFactors=F)
 DamMaxMin <- read.table(paste0(indir, "miscellaneous/DamMaxMin.txt"), header=T)
 mainstem_names <- c("CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Dams along the Columbia mainstem
@@ -114,9 +114,9 @@ Output_to_ColSim[1:4] <- timeseries
 names(Output_to_ColSim) <- names_Output
 
 #############################################################
-######													#####				
-###### 		  		Variable Refill Curves 				#####
-######				  									#####
+######													                        #####				
+###### 		  		Variable Refill Curves 				          #####
+######				  									                      #####
 #############################################################
 
 ### Power Discharge Requirements (PDR). These are parameters used by the Columbia River Treaty Operating Committee for computing variable refill.
@@ -180,10 +180,10 @@ Output_to_ColSim$MIRunoffAprAug[1:n_years] <- subset(aggregate(modified_flow$MIC
 Output_to_ColSim$MIRunoffMayAug[1:n_years] <- subset(aggregate(modified_flow$MICAA, list(modified_flow$Year, modified_flow$Month %in% 5:8), sum), Group.2 == TRUE & Group.1 > begin_year)[,3]
 
 #############################################################
-######													#####				
-###### 		  Rule curves for reservoirs without 		#####
-######				  upstream storage 					#####
-######													#####					
+######													                        #####				
+###### 		  Rule curves for reservoirs without 		      #####
+######				  upstream storage 					              #####
+######													                        #####					
 #############################################################
 
 ## Jan--Jul forecasted inflow at The Dalles for determining PDR's
@@ -196,7 +196,7 @@ VariableRefillCurve_min <- calc_refill_curve("minimum") ## Perfect Forecast refi
 
 for (d in c("MI", "DU", "LB", "HH", "KE", "AF", "CL", "BR", "DW")) {
 	dam <- dam_lookup$name1[dam_lookup$name3 == d]
-	assign(paste0(d, "Refill_min"), VariableRefillCurve_min[2:N,dam] - VariableRefillCurve_min[1:(N-1),dam]) ## Refill requirment for each timestep to meet target refill
+	assign(paste0(d, "Refill_min"), VariableRefillCurve_min[2:N,dam] - VariableRefillCurve_min[1:(N-1),dam]) ## Refill requirement for each timestep to meet target refill
 }
 
 #### Calculate and write rule curves
@@ -213,9 +213,9 @@ BRRuleCurves.df <- RuleCurve_df("BROWN")
 DWRuleCurves.df <- RuleCurve_df("DWORS")
 
 #############################################################
-######													#####				
+######													                        #####				
 ###### Rule curves for reservoirs with upstream storage #####
-######													#####					
+######													                        #####					
 #############################################################
 
 ## Storage(t1-1) = Storage(t1) - Qin(t1) + PDR(t1) + upstream_refill_requirement(t1)
@@ -244,10 +244,10 @@ VariableRefillCurve$GCOUL <- calc_refill_with_upstream_storage("regular", "GCOUL
 VariableRefillCurve_min$GCOUL <- calc_refill_with_upstream_storage("minimum", "GCOUL")
 
 #############################################################
-######													#####				
+######													                        #####				
 ######  Corrected Apr -- Aug inflow at The Dalles for   #####
-######            Grand Coulee flood curve 				#####
-######													#####					
+######            Grand Coulee flood curve 				      #####
+######													                        #####					
 #############################################################
 
 ## The storage reservation diagram for Grand Coulee (https://www.nwd-wc.usace.army.mil/cafe/forecast/SRD/GCLsrd2015.pdf) is based on forecasted April through Aug runoff volume 
@@ -279,17 +279,17 @@ AprilDAUpstreamStorageGC <- pmin(4.08e6, MIFullPoolVol - MIRuleCurves.df$Operati
 Output_to_ColSim$CorrectedDARunoffAprAug <- Output_to_ColSim$DARunoffAprAug - c(AprilDAUpstreamStorageGC, rep(NA, N - n_years))
 
 #############################################################
-######													#####				
+######													                        #####				
 ######  Corrected residual inflow at The Dalles for     #####
-######	    initial  controlled flow computation 		#####
-######          										#####
+######	    initial  controlled flow computation 		    #####
+######          										                    #####
 #############################################################
 
 ## Here we calculate the remaining inflow to The Dalles by end of August, correcting for upstream storage capacity.
 
 GCRuleCurves.df <- RuleCurve_df("GCOUL")
 OperatingRuleCurves.df$GCOUL <- GCRuleCurves.df$Flood
-write.table(OperatingRuleCurves.df, "inputs/default_rule_curves/OperatingRuleCurves.txt", row.names=F, col.names=T, quote=F)
+write.table(OperatingRuleCurves.df, "inputs/Preliminary/OperatingRuleCurves.txt", row.names=F, col.names=T, quote=F) ## These are preliminary. The actual operating rule curves may change once the actual dam inflows are computed at runtime by the main program.
 
 full_pool <- c(MICAA=MIFullPoolVol, ARROW=ARFullPoolVol, LIBBY=LBFullPoolVol, FLASF=HHFullPoolVol, DUNCA=DUFullPoolVol, DWORS=DWFullPoolVol, BROWN=BRFullPoolVol, GCOUL=GCFullPoolVol, FLAPO=KEFullPoolVol, ALBEN=AFFullPoolVol, CORRA=CLFullPoolVol)
 min_storage <- c(MICAA=4.08e6, ARROW=3.6e6, LIBBY=4.98e6, FLASF=3.07e6, DUNCA=1.27e6, DWORS=2015200, BROWN=975000, GCOUL=5.19e6, FLAPO=1.22e6, CORRA=6.72e6, ALBEN=1.12e6)
@@ -305,7 +305,7 @@ Output_to_ColSim$DACorrectedResidualInflowAprAug <- DAResidualInflow(DAUpStreamS
 
 ##### Calculate Initial Controlled Flow 
 
-ICF_table <- read.table("inputs/default_rule_curves/Dalles_ICF.txt", header=T) ## Chart 1 from FCOP (2003)
+ICF_table <- read.table("inputs/default_rule_curves/Dalles_ICF.txt", header=T) ## Chart 1 from Columbia River Treaty Flood Control Operating Plan (FCOP) (2003)
 flow_inc <- seq(from=30e6, to=140e6, by=5e6)
 Output_to_ColSim$InitialControlledFlow <- sapply(1:N, function(x) get_ICF(Output_to_ColSim$DACorrectedResidualInflowAprAug[x], timeseries$Week[x]))  ## Function called from (LoadFunctions_input_file.R)
 
@@ -323,9 +323,9 @@ for (y in 1:length(years)) {
 Output_to_ColSim$start_refill_wk_GC <- c(start_refill_wk_GC, rep(NA, N - n_years))
 
 #############################################################
-######													#####				
+######													                        #####				
 ######         Set remaining input file columns         #####
-######													#####					
+######													                        #####					
 #############################################################
 
 ## Residual inflow for Upper Snake R. Dams
@@ -401,12 +401,12 @@ if (simulate_demand == 1) {
 }
 
 Output_to_ColSim$DamYear <- ifelse(Output_to_ColSim$Month >= 8, Output_to_ColSim$Year + 1, Output_to_ColSim$Year)
-write.table(Output_to_ColSim, file=paste0(indir, "ToRColSim_scenario_", scr, "_", run_type, ".txt"), row.names=FALSE)
+write.table(Output_to_ColSim, file=paste0(indir, "input_timeseries/ToRColSim_scenario_", scr, "_", run_type, ".txt"), row.names=FALSE)
 
 #############################################################
-######													#####				
-######             Make global input file         		#####
-######													#####					
+######													                        #####				
+######             Make global input file         		  #####
+######													                        #####					
 #############################################################
 
 if (scr_name == "Historical_baseline/baseline") {
@@ -420,8 +420,8 @@ if (!dir.exists(outdir)) { dir.create(outdir, recursive=T) }
 GIF <- data.frame(matrix(nrow=5, ncol=2))
 GIF[,1] <- c("RColSim_WD", "Flow_Input_File", "Output_Folder", "simulation_start_year", "simulation_end_date")
 GIF[1,2] <- getwd()
-GIF[2,2] <- paste0(indir, "ToRColSim_scenario_", scr, "_", run_type, ".txt")
+GIF[2,2] <- paste0(indir, "input_timeseries/ToRColSim_scenario_", scr, "_", run_type, ".txt")
 GIF[3,2] <- outdir
 GIF[4,2] <- sim_start_year
 GIF[5,2] <- as.character(sim_end_date)
-write.table(GIF, paste0("inputs/global_input_files/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=T)
+write.table(GIF, paste0(indir, "global_input_files/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=T)
