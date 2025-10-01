@@ -1,5 +1,0 @@
-RColSim_WD ~/.
-Flow_Input_File ~/inputs/supply_demand_inputs/ToRColSim_scenario_baseline.txt
-Output_Folder ~/output/Historical_baseline/
-simulation_start_year 1979
-simulation_end_date 2007-09-30
