@@ -1,16 +1,5 @@
 #############################################################################################
 
-<<<<<<< HEAD
-#                    		GNU GENERAL PUBLIC LICENSE
-#                      		Version 3, 29 June 2007
-
-# 	Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
-# 	Everyone is permitted to copy and distribute verbatim copies
-# 	of this license document, but changing it is not allowed.
-
-#############################################################################################
-
-=======
 #                                      MIT License
 
 #    Copyright (c) [YEAR] [YOUR NAME / ORGANIZATION]
@@ -37,7 +26,6 @@
 
 
 
->>>>>>> origin/main
 # Modular Load Functions - Sources individual dam files
 # This replaces the monolithic load_functions.R with a modular approach
 
