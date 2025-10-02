@@ -1,5 +1,9 @@
 RColSim_WD .
+<<<<<<< HEAD
+Flow_Input_File inputs/input_timeseries/ToRColSim_scenario_baseline_supply_and_demand.txt
+=======
 Flow_Input_File inputs/supply_demand_inputs/ToRColSim_scenario_baseline_supply_and_demand.txt
+>>>>>>> origin/main
 Output_Folder output/supply_and_demand/Historical_baseline/
 simulation_start_year 1979
 simulation_end_date 1982-09-30
