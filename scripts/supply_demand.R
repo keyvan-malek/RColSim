@@ -25,7 +25,15 @@ scr_name <- sub("_", "/", scr)
 pod_stns <- read.table("inputs/miscellaneous/stn_code_name", header=F, stringsAsFactors=F)[,1] # list of all incremental drainage areas in which agricultural demands have been calculated
 stn_list <- pod_stns[-which(pod_stns %in% c("LISPO", "OWYHE_ID"))]
 
+<<<<<<< HEAD
 stn_colsim <- read.table("inputs/miscellaneous/RColSim_stations.txt", header=T, stringsAsFactors=F)[,1] # list of dams in RColSim
+=======
+stn_list <- read.table("inputs/miscellaneous/stn_code_name", header=F, stringsAsFactors=F)[,1]
+stn_list <- stn_list[-which(stn_list == "LISPO")]
+pod_stns <- read.table("inputs/miscellaneous/stn_code_name", header=F, stringsAsFactors=F)[,1]
+pod_stns <- c(pod_stns, "OWYHE_ID")
+stn_colsim <- read.table("inputs/miscellaneous/RColSim_stations.txt", header=T, stringsAsFactors=F)[,1]
+>>>>>>> origin/main
 stn_iflow <- c("SIMNI","METPA","WENMO","WENPE","OKANA","OKANO", "COLKE", "CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Control points for instream flow rules
 trib_names <- c("SIMNI","METPA","WENMO","WENPE","OKANA","OKANO", "COLKE") ## Control points along tributaries to the Columbia R.
 mainstem_names <- c("CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Control points along the Columbia mainstem
@@ -123,8 +131,13 @@ if (run_type == "supply_and_demand") {
 	################# Add Residential Demand ############################
 
 	MGtoAFM <- 3.068893 
+<<<<<<< HEAD
 	muni_demand <- read.csv("inputs/miscellaneous/Final_Muni_Demand.csv", stringsAsFactors=F) ## Consumptive municipal water demand by subbasin in Washington State 
 	WRIA_to_pod_areas <- read.csv("inputs/miscellaneous/WRIA_pod_areas.csv", stringsAsFactors=F) ## Area by drainage area and WRIA
+=======
+	muni_demand <- read.csv("inputs/miscellaneous/Final_Muni_Demand.csv", stringsAsFactors=F) ## Consumptive municiple water demand by subbasin in Washington State 
+	WRIA_to_pod_areas <- read.csv("inputs/miscellaneous/WRIA_pod_areas.csv", stringsAsFactors=F) 
+>>>>>>> origin/main
 	WRIA_areas <- aggregate(WRIA_to_pod_areas[,5], list(WRIA_to_pod_areas[,1]), sum)
 	WRIA_to_pod_areas$WRIA_Area <- WRIA_areas[match(WRIA_to_pod_areas[,1], WRIA_areas[,1]),2]
 	WRIA_to_pod_areas$Fraction <- WRIA_to_pod_areas[,5] / WRIA_to_pod_areas[,6]
@@ -191,7 +204,11 @@ if (run_type == "supply_and_demand") {
 		
 	######################### Tributary Curtailment ###############################	
 
+<<<<<<< HEAD
 	SWFraction <- read.table("inputs/miscellaneous/interruptible_sw_fractions.txt", header=T) # fraction of interruptible demand that comes from a surface water source
+=======
+	SWFraction <- read.table("inputs/miscellaneous/interruptible_sw_fractions.txt", header=T)
+>>>>>>> origin/main
 	iflows <- data.frame(matrix(nrow=length(dates), ncol=length(pod_stns), 0))
 	for(i in 1:length(stn_iflow)) {
 		col = which(pod_stns==stn_iflow[i])
