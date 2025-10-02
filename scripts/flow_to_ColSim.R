@@ -26,7 +26,11 @@ if (run_type == "supply_and_demand") {
 gcm <- strsplit(scr_name, "/")[[1]][1] ## The global circulation model, if future climate data are used, or Historical_baseline for historical climate data
 scr <- strsplit(scr_name, "/")[[1]][2] ## rcp4.5 or rcp8.5 for future climate scenarios
 indir <- "inputs/"
+<<<<<<< HEAD
 indir2 <- paste0("inputs/Preliminary/output/", run_type, "/", gcm, "/")
+=======
+indir2 <- paste0("Preliminary/output/", run_type, "/", gcm, "/")
+>>>>>>> origin/main
 stn_colsim <- read.table(paste0("inputs/miscellaneous/RColSim_stations.txt"), header=T, stringsAsFactors=F)
 DamMaxMin <- read.table(paste0(indir, "miscellaneous/DamMaxMin.txt"), header=T)
 mainstem_names <- c("CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Dams along the Columbia mainstem
@@ -289,7 +293,11 @@ Output_to_ColSim$CorrectedDARunoffAprAug <- Output_to_ColSim$DARunoffAprAug - c(
 
 GCRuleCurves.df <- RuleCurve_df("GCOUL")
 OperatingRuleCurves.df$GCOUL <- GCRuleCurves.df$Flood
+<<<<<<< HEAD
 write.table(OperatingRuleCurves.df, "inputs/Preliminary/OperatingRuleCurves.txt", row.names=F, col.names=T, quote=F) ## These are preliminary. The actual operating rule curves may change once the actual dam inflows are computed at runtime by the main program.
+=======
+write.table(OperatingRuleCurves.df, "inputs/default_rule_curves/OperatingRuleCurves.txt", row.names=F, col.names=T, quote=F)
+>>>>>>> origin/main
 
 full_pool <- c(MICAA=MIFullPoolVol, ARROW=ARFullPoolVol, LIBBY=LBFullPoolVol, FLASF=HHFullPoolVol, DUNCA=DUFullPoolVol, DWORS=DWFullPoolVol, BROWN=BRFullPoolVol, GCOUL=GCFullPoolVol, FLAPO=KEFullPoolVol, ALBEN=AFFullPoolVol, CORRA=CLFullPoolVol)
 min_storage <- c(MICAA=4.08e6, ARROW=3.6e6, LIBBY=4.98e6, FLASF=3.07e6, DUNCA=1.27e6, DWORS=2015200, BROWN=975000, GCOUL=5.19e6, FLAPO=1.22e6, CORRA=6.72e6, ALBEN=1.12e6)
@@ -305,7 +313,11 @@ Output_to_ColSim$DACorrectedResidualInflowAprAug <- DAResidualInflow(DAUpStreamS
 
 ##### Calculate Initial Controlled Flow 
 
+<<<<<<< HEAD
 ICF_table <- read.table("inputs/default_rule_curves/Dalles_ICF.txt", header=T) ## Chart 1 from Columbia River Treaty Flood Control Operating Plan (FCOP) (2003)
+=======
+ICF_table <- read.table("inputs/default_rule_curves/Dalles_ICF.txt", header=T) ## Chart 1 from FCOP (2003)
+>>>>>>> origin/main
 flow_inc <- seq(from=30e6, to=140e6, by=5e6)
 Output_to_ColSim$InitialControlledFlow <- sapply(1:N, function(x) get_ICF(Output_to_ColSim$DACorrectedResidualInflowAprAug[x], timeseries$Week[x]))  ## Function called from (LoadFunctions_input_file.R)
 
@@ -424,4 +436,8 @@ GIF[2,2] <- paste0(indir, "input_timeseries/ToRColSim_scenario_", scr, "_", run_
 GIF[3,2] <- outdir
 GIF[4,2] <- sim_start_year
 GIF[5,2] <- as.character(sim_end_date)
+<<<<<<< HEAD
 write.table(GIF, paste0(indir, "global_input_files/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=T)
+=======
+write.table(GIF, paste0("inputs/global_input_files/GIF_", global_input_file, "_", run_type), col.names=F, row.names=F, quote=T)
+>>>>>>> origin/main
