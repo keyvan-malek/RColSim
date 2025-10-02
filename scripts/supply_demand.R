@@ -22,18 +22,12 @@ get_iflow <- function(time_series, station) {
 }
 scr_name <- sub("_", "/", scr)
 
-pod_stns <- read.table("inputs/miscellaneous/stn_code_name", header=F, stringsAsFactors=F)[,1] # list of all incremental drainage areas in which agricultural demands have been calculated
-stn_list <- pod_stns[-which(pod_stns %in% c("LISPO", "OWYHE_ID"))]
 
-<<<<<<< HEAD
-stn_colsim <- read.table("inputs/miscellaneous/RColSim_stations.txt", header=T, stringsAsFactors=F)[,1] # list of dams in RColSim
-=======
 stn_list <- read.table("inputs/miscellaneous/stn_code_name", header=F, stringsAsFactors=F)[,1]
 stn_list <- stn_list[-which(stn_list == "LISPO")]
 pod_stns <- read.table("inputs/miscellaneous/stn_code_name", header=F, stringsAsFactors=F)[,1]
 pod_stns <- c(pod_stns, "OWYHE_ID")
 stn_colsim <- read.table("inputs/miscellaneous/RColSim_stations.txt", header=T, stringsAsFactors=F)[,1]
->>>>>>> origin/main
 stn_iflow <- c("SIMNI","METPA","WENMO","WENPE","OKANA","OKANO", "COLKE", "CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Control points for instream flow rules
 trib_names <- c("SIMNI","METPA","WENMO","WENPE","OKANA","OKANO", "COLKE") ## Control points along tributaries to the Columbia R.
 mainstem_names <- c("CHIEF", "DALLE", "JDAYY", "MCNAR", "PRIRA", "ROCKY", "RISLA", "WANAP", "WELLS") ## Control points along the Columbia mainstem
@@ -55,8 +49,8 @@ if(scr_name == "Historical/baseline") {
 
 nrows <- as.numeric(end_date - begin_date + 1)
 daily_supply <- data.frame(matrix(ncol=(length(stn_list)+3), nrow=nrows, -9999))
-routdir <- "inputs/Preliminary/routed_flow/"
-biasdir <- "inputs/Preliminary/bc_flow/"
+routdir <- "Preliminary/routed_flow/"
+biasdir <- "Preliminary/bc_flow/"
 
 for (ii_stn in 1:length(stn_list)) {
 	print(ii_stn)
@@ -106,19 +100,15 @@ weekly_supply$OXBOW <- weekly_supply$BROWN ## The NRNI flow for Brownlee and Oxb
 names(weekly_supply) <- stn_list
 weekly_supply <- as.data.frame(weekly_supply)
 
-############################### Irrigation demands ##############################################
-### These irrigation demands were simulated with VIC-CropSyst at the grid scale and            ##
-### then aggregated over the drainage areas listed in pod_stns. The contributing 0.0625-degree ##
-### resolution grid cells for each drainage area are given in                                  ##
-###         "inputs/miscellaneous/pod_update_RColSim.txt"                                      ##
-#################################################################################################
+############################### Irrigation demands ############################################
+
 if (run_type == "supply_and_demand") {
 	if (scr_name == "Historical_baseline/baseline") {
-		daily_demand <- read.table(paste0("inputs/Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_demands.txt"))
-		daily_interruptible_demand <- read.table(paste0("inputs/Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_interruptible_demands.txt"))
+		daily_demand <- read.table(paste0("Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_demands.txt"))
+		daily_interruptible_demand <- read.table(paste0("Preliminary/irrigation_demands/Historical_baseline/Historical_baseline_interruptible_demands.txt"))
 	} else {
-		daily_demand <- read.table(paste0("inputs/Preliminary/irrigation_demands/", scr_name, "_demands.txt"))
-		daily_interruptible_demand <- read.table(paste0("inputs/Preliminary/irrigation_demands/", scr_name, "_interruptible_demands.txt"))
+		daily_demand <- read.table(paste0("Preliminary/irrigation_demands/", scr_name, "_demands.txt"))
+		daily_interruptible_demand <- read.table(paste0("Preliminary/irrigation_demands/", scr_name, "_interruptible_demands.txt"))
 	}
 	xts_demand <- xts(daily_demand[1:nrows,1:L_col2], seq(from=begin_date, to=end_date, by=1))
 	xts_interruptible_demand <- xts(daily_interruptible_demand[1:nrows,1:L_col2], seq(from=begin_date, to=end_date, by=1))
@@ -131,13 +121,8 @@ if (run_type == "supply_and_demand") {
 	################# Add Residential Demand ############################
 
 	MGtoAFM <- 3.068893 
-<<<<<<< HEAD
-	muni_demand <- read.csv("inputs/miscellaneous/Final_Muni_Demand.csv", stringsAsFactors=F) ## Consumptive municipal water demand by subbasin in Washington State 
-	WRIA_to_pod_areas <- read.csv("inputs/miscellaneous/WRIA_pod_areas.csv", stringsAsFactors=F) ## Area by drainage area and WRIA
-=======
 	muni_demand <- read.csv("inputs/miscellaneous/Final_Muni_Demand.csv", stringsAsFactors=F) ## Consumptive municiple water demand by subbasin in Washington State 
 	WRIA_to_pod_areas <- read.csv("inputs/miscellaneous/WRIA_pod_areas.csv", stringsAsFactors=F) 
->>>>>>> origin/main
 	WRIA_areas <- aggregate(WRIA_to_pod_areas[,5], list(WRIA_to_pod_areas[,1]), sum)
 	WRIA_to_pod_areas$WRIA_Area <- WRIA_areas[match(WRIA_to_pod_areas[,1], WRIA_areas[,1]),2]
 	WRIA_to_pod_areas$Fraction <- WRIA_to_pod_areas[,5] / WRIA_to_pod_areas[,6]
@@ -204,11 +189,7 @@ if (run_type == "supply_and_demand") {
 		
 	######################### Tributary Curtailment ###############################	
 
-<<<<<<< HEAD
-	SWFraction <- read.table("inputs/miscellaneous/interruptible_sw_fractions.txt", header=T) # fraction of interruptible demand that comes from a surface water source
-=======
 	SWFraction <- read.table("inputs/miscellaneous/interruptible_sw_fractions.txt", header=T)
->>>>>>> origin/main
 	iflows <- data.frame(matrix(nrow=length(dates), ncol=length(pod_stns), 0))
 	for(i in 1:length(stn_iflow)) {
 		col = which(pod_stns==stn_iflow[i])
@@ -324,7 +305,7 @@ if (scr_name == "Historical_baseline/baseline") {
 	timeseries <- read.table("inputs/miscellaneous/ts_GCM.txt", header=T)
 }
 
-outdir <- paste0("inputs/Preliminary/output/", run_type, "/", strsplit(scr_name, "/")[[1]][1])
+outdir <- paste0("Preliminary/output/", run_type, "/", strsplit(scr_name, "/")[[1]][1])
 if (!dir.exists(outdir)) { dir.create(outdir, recursive=T) }
 setwd(outdir)
 
