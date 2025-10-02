@@ -333,7 +333,7 @@ RuleCurve_df <- function(res) {
 	RuleCurves$OperatingRuleCurve <- pmin(pmax(pmin(pmax(RuleCurves$AssuredRefill, RuleCurves$Critical), RuleCurves$VariableRefill), RuleCurves$LowerLimit), RuleCurves$Flood, RuleCurves$BiOp)
 	RuleCurves$RefillReq <- c(RuleCurves$OperatingRuleCurve[2:N] - RuleCurves$OperatingRuleCurve[1:(N-1)], 0)
 	RuleCurves[is.na(RuleCurves)] = DamMaxMin[1,res]
-	write.table(RuleCurves, paste0("inputs/Preliminary/refill_curves/", res, "RefillCurves.txt"), row.names=F, col.names=T, quote=F)
+	write.table(RuleCurves, paste0("misc/", res, "RefillCurves.txt"), row.names=F, col.names=T, quote=F)
 	return(RuleCurves)
 }
 DAResidualInflow <- function(S) {

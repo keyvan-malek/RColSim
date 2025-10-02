@@ -1,0 +1,5 @@
+RColSim_WD /home/myourek/RColSimV1
+Flow_Input_File inputs/ToRColSim_scenario_rcp45_supply_and_demand.txt
+Output_Folder output/supply_and_demand/bcc-csm1-1/rcp45/
+simulation_start_year 2006
+simulation_end_date 2094-09-26
