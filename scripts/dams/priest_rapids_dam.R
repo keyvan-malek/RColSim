@@ -6,13 +6,8 @@
 #######################################################
 
 PriestRapidsFlowData <- function() {
-<<<<<<< HEAD
-  flow_o <- FlowPR + RetPR
-  return(flow_o)
-=======
   flow_o <- FlowPR #+ RetPR
   return(max(FlowPR))
->>>>>>> origin/main
 }
 PRInc <- function() {
   PRInc_o <- PriestRapidsFlowData() - WanapumFlowData()
