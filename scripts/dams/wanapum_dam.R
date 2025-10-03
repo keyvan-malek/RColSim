@@ -6,8 +6,8 @@
 #######################################################
 
 WanapumFlowData <- function() {
-  flow_o <- FlowWA + RetWA
-  return(flow_o)
+  flow_o <- FlowWA #+ RetWA
+  return(max(FlowWA))
 }
 WAInc <- function() {
   WAInc_o <- WanapumFlowData() - RockIslandFlowData()
