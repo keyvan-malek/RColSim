@@ -60,7 +60,7 @@ are:
     global input file.
 12. *dataframes.R* -- Initializes dataframes of output variables.
 
-In addition to the R scripts, there are five subdirectories. These are:
+In addition to the R scripts, there are six subdirectories. These are:
 
 1.  *Documentation* -- Reservoir operational, procedural, planning, and
     regulatory documents upon which the RColSim model is based.
