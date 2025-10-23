@@ -65,153 +65,221 @@ MITargetMin <- function() { ## target minimum release, FCOP 2003
 MITargetMin_o <- MIAssuredRelease_input$target[week_in_year]
 return(MITargetMin_o)
 }
-MITargetRelease <- function() { ## target average release, FCOP 2003
-if (week_in_year %in% 1:3) {
+# Helper function to calculate ORC-based release
+MI_ORC_based_release <- function() {
+  return((Mica() + MIInflow() - MI_ORC()) / cfsTOafw)
+}
+
+# Helper function for weeks 1-3
+MI_target_release_weeks_1_3 <- function() {
   if (Arrow() >= 6772749) {
-    #MITargetRelease_o <- (Mica() + MIInflow() - 19747728) / cfsTOafw
-    MITargetRelease_o <- (Mica() + MIInflow() - MI_ORC()) / cfsTOafw
+    return(MI_ORC_based_release())
   } else if (Arrow() >= 4531429) {
-    MITargetRelease_o <- 25000
+    return(25000)
   } else if (Arrow() >= 3202504) {
-    MITargetRelease_o <- 20000
+    return(20000)
   } else {
-    MITargetRelease_o <- 32000
-  }
-} else if (week_in_year %in% 4:5) {
-  if (Arrow() >= 5602502) {
-    #MITargetRelease_o <- (Mica() + MIInflow() - 20075000) / cfsTOafw
-    MITargetRelease_o <- (Mica() + MIInflow() - MI_ORC()) / cfsTOafw
-  } else if (Arrow() >= 4095065) {
-    MITargetRelease_o <- 25000
-  } else {
-    MITargetRelease_o <- 32000
-  }
-} else if (week_in_year %in% 6:9) {
-  if (Arrow() >= 7228947) {
-    #MITargetRelease_o <- (Mica() + MIInflow() - 20075000) / cfsTOafw
-    MITargetRelease_o <- (Mica() + MIInflow() - MI_ORC()) / cfsTOafw
-  } else if (Arrow() >= 6971096) {
-    MITargetRelease_o <- 24000
-  } else if (Arrow() >= 5781014) {
-    MITargetRelease_o <- 27000
-  } else {
-    MITargetRelease_o <- 32000
-  }
-} else if (week_in_year %in% 10:14) {
-  if (Arrow() >= 7050435) {
-    #MITargetRelease_o <- (Mica() + MIInflow() - 19875066) / cfsTOafw
-    MITargetRelease_o <- (Mica() + MIInflow() - MI_ORC()) / cfsTOafw
-  } else if (Arrow() >= 5384321) {
-    MITargetRelease_o <- 19000
-  } else if (Arrow() >= 4194239) {
-    MITargetRelease_o <- 22000
-  } else {
-    MITargetRelease_o <- 32000
-  }
-} else if (week_in_year %in% 15:18) {
-  if (Arrow() >= 6852088) {
-    MITargetRelease_o <- 21000
-  } else if (Arrow() >= 6435559) {
-    MITargetRelease_o <- 19000
-  } else if (Arrow() >= 1060357) {
-    MITargetRelease_o <- 25000
-  } else {
-    MITargetRelease_o <- 32000
-  }
-} else if (week_in_year %in% 19:22) {
-  if (Arrow() >= 5662006) {
-    MITargetRelease_o <- 25000
-  } else if (Arrow() >= 3797545) {
-    MITargetRelease_o <- 22000
-  } else if (Arrow() >= 822341) {
-    MITargetRelease_o <- 27000
-  } else {
-    MITargetRelease_o <- 32000
-  }
-} else if (week_in_year %in% 23:27) {
-  if (Arrow() >= 5463659) {
-    MITargetRelease_o <- 24000
-  } else if (Arrow() >= 4551263) {
-    MITargetRelease_o <- 27000
-  } else if (Arrow() >= 2904984) {
-    MITargetRelease_o <- 25000
-  } else {
-    MITargetRelease_o <- 29000
-  }
-} else if (week_in_year %in% 28:31) {
-  if (Arrow() >= 2944653) {
-    MITargetRelease_o <- 21000
-  } else if (Arrow() >= 2012422) {
-    MITargetRelease_o <- 26000
-  } else if (Arrow() >= 1219035) {
-    MITargetRelease_o <- 21000
-  } else {
-    MITargetRelease_o <- 26000
-  }
-} else if (week_in_year %in% 32:35) {
-  if (Arrow() >= 1814076) {
-    MITargetRelease_o <- 17000
-  } else if (Arrow() >= 1754571) {
-    MITargetRelease_o <- 26000
-  } else if (Arrow() >= 1238869) {
-    MITargetRelease_o <- 22000
-  } else {
-    MITargetRelease_o <- 25000
-  }
-} else if (week_in_year %in% 36:37) {
-  if (Arrow() >= 1992588) {
-    MITargetRelease_o <- 20000
-  } else if (Arrow() >= 921514) {
-    MITargetRelease_o <- 10000
-  } else if (Arrow() >= 663663) {
-    MITargetRelease_o <- 12000
-  } else {
-    MITargetRelease_o <- 22000
-  }
-} else if (week_in_year %in% 38:39) {
-  if (Arrow() >= 1357878) {
-    MITargetRelease_o <- 10000
-  } else if (Arrow() >= 445482) {
-    MITargetRelease_o <- 15000
-  } else if (Arrow() >= 266969) {
-    MITargetRelease_o <- 10000
-  } else {
-    MITargetRelease_o <- 15000
-  }
-} else if (week_in_year %in% 40:44) {
-  if (Arrow() >= 1496720) {
-    MITargetRelease_o <- 8000
-  } else if (Arrow() >= 1258704) {
-    MITargetRelease_o <- 12000
-  } else if (Arrow() >= 663663) {
-    MITargetRelease_o <- 8000
-  } else {
-    MITargetRelease_o <- 10000
-  }
-} else if (week_in_year %in% 45:48) {
-  if (Arrow() >= 3420686) {
-    MITargetRelease_o <- 8000
-  } else if (Arrow() >= 2250439) {
-    MITargetRelease_o <- 10000
-  } else if (Arrow() >= 1833910) {
-    MITargetRelease_o <- 14000
-  } else {
-    MITargetRelease_o <- 18000
-  }
-} else if (week_in_year %in% 49:52) {
-  if (Arrow() >= 6534733) {
-    #MITargetRelease_o <- (Mica() + MIInflow() - 19952025) / cfsTOafw
-    MITargetRelease_o <- (Mica() + MIInflow() - MI_ORC()) / cfsTOafw
-  } else if (Arrow() >= 5523163) {
-    #MITargetRelease_o <- (Mica() + MIInflow() - 19829050) / cfsTOafw
-    MITargetRelease_o <- (Mica() + MIInflow() - MI_ORC()) / cfsTOafw
-  } else if (Arrow() >= 2528125) {
-    MITargetRelease_o <- 14000
-  } else {
-    MITargetRelease_o <- 18000
+    return(32000)
   }
 }
-return(MITargetRelease_o)
+
+# Helper function for weeks 4-5
+MI_target_release_weeks_4_5 <- function() {
+  if (Arrow() >= 5602502) {
+    return(MI_ORC_based_release())
+  } else if (Arrow() >= 4095065) {
+    return(25000)
+  } else {
+    return(32000)
+  }
+}
+
+# Helper function for weeks 6-9
+MI_target_release_weeks_6_9 <- function() {
+  if (Arrow() >= 7228947) {
+    return(MI_ORC_based_release())
+  } else if (Arrow() >= 6971096) {
+    return(24000)
+  } else if (Arrow() >= 5781014) {
+    return(27000)
+  } else {
+    return(32000)
+  }
+}
+
+# Helper function for weeks 10-14
+MI_target_release_weeks_10_14 <- function() {
+  if (Arrow() >= 7050435) {
+    return(MI_ORC_based_release())
+  } else if (Arrow() >= 5384321) {
+    return(19000)
+  } else if (Arrow() >= 4194239) {
+    return(22000)
+  } else {
+    return(32000)
+  }
+}
+
+# Helper function for weeks 15-18
+MI_target_release_weeks_15_18 <- function() {
+  if (Arrow() >= 6852088) {
+    return(21000)
+  } else if (Arrow() >= 6435559) {
+    return(19000)
+  } else if (Arrow() >= 1060357) {
+    return(25000)
+  } else {
+    return(32000)
+  }
+}
+
+# Helper function for weeks 19-22
+MI_target_release_weeks_19_22 <- function() {
+  if (Arrow() >= 5662006) {
+    return(25000)
+  } else if (Arrow() >= 3797545) {
+    return(22000)
+  } else if (Arrow() >= 822341) {
+    return(27000)
+  } else {
+    return(32000)
+  }
+}
+
+# Helper function for weeks 23-27
+MI_target_release_weeks_23_27 <- function() {
+  if (Arrow() >= 5463659) {
+    return(24000)
+  } else if (Arrow() >= 4551263) {
+    return(27000)
+  } else if (Arrow() >= 2904984) {
+    return(25000)
+  } else {
+    return(29000)
+  }
+}
+
+# Helper function for weeks 28-31
+MI_target_release_weeks_28_31 <- function() {
+  if (Arrow() >= 2944653) {
+    return(21000)
+  } else if (Arrow() >= 2012422) {
+    return(26000)
+  } else if (Arrow() >= 1219035) {
+    return(21000)
+  } else {
+    return(26000)
+  }
+}
+
+# Helper function for weeks 32-35
+MI_target_release_weeks_32_35 <- function() {
+  if (Arrow() >= 1814076) {
+    return(17000)
+  } else if (Arrow() >= 1754571) {
+    return(26000)
+  } else if (Arrow() >= 1238869) {
+    return(22000)
+  } else {
+    return(25000)
+  }
+}
+
+# Helper function for weeks 36-37
+MI_target_release_weeks_36_37 <- function() {
+  if (Arrow() >= 1992588) {
+    return(20000)
+  } else if (Arrow() >= 921514) {
+    return(10000)
+  } else if (Arrow() >= 663663) {
+    return(12000)
+  } else {
+    return(22000)
+  }
+}
+
+# Helper function for weeks 38-39
+MI_target_release_weeks_38_39 <- function() {
+  if (Arrow() >= 1357878) {
+    return(10000)
+  } else if (Arrow() >= 445482) {
+    return(15000)
+  } else if (Arrow() >= 266969) {
+    return(10000)
+  } else {
+    return(15000)
+  }
+}
+
+# Helper function for weeks 40-44
+MI_target_release_weeks_40_44 <- function() {
+  if (Arrow() >= 1496720) {
+    return(8000)
+  } else if (Arrow() >= 1258704) {
+    return(12000)
+  } else if (Arrow() >= 663663) {
+    return(8000)
+  } else {
+    return(10000)
+  }
+}
+
+# Helper function for weeks 45-48
+MI_target_release_weeks_45_48 <- function() {
+  if (Arrow() >= 3420686) {
+    return(8000)
+  } else if (Arrow() >= 2250439) {
+    return(10000)
+  } else if (Arrow() >= 1833910) {
+    return(14000)
+  } else {
+    return(18000)
+  }
+}
+
+# Helper function for weeks 49-52
+MI_target_release_weeks_49_52 <- function() {
+  if (Arrow() >= 6534733) {
+    return(MI_ORC_based_release())
+  } else if (Arrow() >= 5523163) {
+    return(MI_ORC_based_release())
+  } else if (Arrow() >= 2528125) {
+    return(14000)
+  } else {
+    return(18000)
+  }
+}
+
+MITargetRelease <- function() { ## target average release, FCOP 2003
+  if (week_in_year %in% 1:3) {
+    return(MI_target_release_weeks_1_3())
+  } else if (week_in_year %in% 4:5) {
+    return(MI_target_release_weeks_4_5())
+  } else if (week_in_year %in% 6:9) {
+    return(MI_target_release_weeks_6_9())
+  } else if (week_in_year %in% 10:14) {
+    return(MI_target_release_weeks_10_14())
+  } else if (week_in_year %in% 15:18) {
+    return(MI_target_release_weeks_15_18())
+  } else if (week_in_year %in% 19:22) {
+    return(MI_target_release_weeks_19_22())
+  } else if (week_in_year %in% 23:27) {
+    return(MI_target_release_weeks_23_27())
+  } else if (week_in_year %in% 28:31) {
+    return(MI_target_release_weeks_28_31())
+  } else if (week_in_year %in% 32:35) {
+    return(MI_target_release_weeks_32_35())
+  } else if (week_in_year %in% 36:37) {
+    return(MI_target_release_weeks_36_37())
+  } else if (week_in_year %in% 38:39) {
+    return(MI_target_release_weeks_38_39())
+  } else if (week_in_year %in% 40:44) {
+    return(MI_target_release_weeks_40_44())
+  } else if (week_in_year %in% 45:48) {
+    return(MI_target_release_weeks_45_48())
+  } else if (week_in_year %in% 49:52) {
+    return(MI_target_release_weeks_49_52())
+  }
 }
 
 

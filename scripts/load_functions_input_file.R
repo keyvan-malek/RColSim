@@ -17,69 +17,39 @@ get_iflow_mainstem = function(station) {
 	return(instream)
 }
 
+# Helper function to get upstream dams recursively
+get_upstream_recursive <- function(dams, flow_map, visited = character(0)) {
+  result <- character(0)
+  
+  for (dam in dams) {
+    if (!dam %in% visited) {
+      result <- c(result, dam)
+      visited <- c(visited, dam)
+      
+      upstream_dams <- flow_map$Up[flow_map$Down == dam]
+      if (length(upstream_dams) > 0) {
+        upstream_result <- get_upstream_recursive(upstream_dams, flow_map, visited)
+        result <- c(result, upstream_result)
+        visited <- c(visited, upstream_result)
+      }
+    }
+  }
+  
+  return(unique(result))
+}
+
 get_columns <- function(dam, flow_map) {
-	ind = dam
-	next_up = flow_map$Up[flow_map$Down==dam]
-	while (length(next_up) > 0) {
-		ind = c(ind, next_up)
-		if (length(next_up) == 1) {
-			next_up = flow_map$Up[flow_map$Down==next_up]
-		} else {
-			for (n in next_up) {
-				nnext_up = flow_map$Up[flow_map$Down==n]
-				while (length(nnext_up) > 0) {
-					ind = c(ind, nnext_up)
-					if (length(nnext_up) == 1) {					
-						nnext_up = flow_map$Up[flow_map$Down==nnext_up]
-					} else { 
-						for (nn in nnext_up) {
-							nnnext_up = flow_map$Up[flow_map$Down==nn]
-							while (length(nnnext_up) > 0) {
-								ind = c(ind, nnnext_up)
-								if (length(nnnext_up) == 1) {
-									nnnext_up = flow_map$Up[flow_map$Down==nnnext_up]
-								} else {
-									for (nnn in nnnext_up) {
-										nnnnext_up = flow_map$Up[flow_map$Down==nnn]
-										while (length(nnnnext_up) > 0) {
-											ind = c(ind, nnnnext_up)
-											if (length(nnnnext_up) == 1) {
-												nnnnext_up = flow_map$Up[flow_map$Down==nnnnext_up]
-											} else {
-												for (nnnn in nnnnext_up) {
-													nnnnnext_up = flow_map$Up[flow_map$Down==nnnn]
-													while (length(nnnnnext_up) > 0) {
-														ind = c(ind, nnnnnext_up)
-														if (length(nnnnnext_up) == 1) {
-															nnnnnext_up = flow_map$Up[flow_map$Down==nnnnnext_up]
-														} else {
-															for (nnnnn in nnnnnext_up) {
-																nnnnnnext_up = flow_map$Up[flow_map$Down==nnnnn]
-																while (length(nnnnnnext_up) > 0) {
-																	ind = c(ind, nnnnnnext_up)
-																	nnnnnnext_up = flow_map$Up[flow_map$Down==nnnnnnext_up]
-																}
-															}
-															nnnnnext_up = character(0)
-														}
-													}
-												}
-												nnnnext_up = character(0)
-											}
-										}
-									}
-									nnnext_up = character(0)
-								}
-							}
-						}
-						nnext_up = character(0)
-					}
-				}
-			}
-			next_up = character(0)
-		}
-	}
-	return(ind)
+  # Get all upstream dams recursively
+  upstream_dams <- flow_map$Up[flow_map$Down == dam]
+  
+  if (length(upstream_dams) > 0) {
+    all_upstream <- get_upstream_recursive(upstream_dams, flow_map)
+    ind <- c(dam, all_upstream)
+  } else {
+    ind <- dam
+  }
+  
+  return(ind)
 }
 
 get_rule_curves <- function(res) {

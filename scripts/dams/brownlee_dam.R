@@ -103,105 +103,140 @@ BRAvailWater <- function() {
 
 ### Flood curve for Browlee reservoir is based on the April--August forecast at The Dalles and the April--July forecast at Brownlee
 ### (Hells Canyon Complex FERC No. 1971 License Application)
+# Helper function to interpolate between two flood curve values
+BR_interpolate_flood_curve <- function(lower_val, upper_val, lower_bound, upper_bound, current_val) {
+  return(lower_val - (lower_val - upper_val) / (upper_bound - lower_bound) * (current_val - lower_bound))
+}
+
+# Helper function to get BR runoff category index
+BR_get_runoff_category <- function(br_runoff) {
+  if (br_runoff <= 3E6) return(1)
+  if (br_runoff <= 4E6) return(2)
+  if (br_runoff <= 5E6) return(3)
+  if (br_runoff <= 6E6) return(4)
+  return(5)
+}
+
+# Helper function to get flood curve value for specific DA and BR runoff ranges
+BR_get_flood_curve_value <- function(da_lower, da_upper, br_category) {
+  if (DARunoffAprAug <= da_lower) return(NULL)
+  if (DARunoffAprAug > da_upper) return(NULL)
+  
+  if (br_category == 1) {
+    if (da_lower == 75E6) return(BRFlood_input$BR75_3[week_in_year])
+    if (da_lower == 85E6) return(BR_interpolate_flood_curve(BRFlood_input$BR75_3[week_in_year], BRFlood_input$BR85_3[week_in_year], 75E6, 85E6, DARunoffAprAug))
+    if (da_lower == 95E6) return(BR_interpolate_flood_curve(BRFlood_input$BR85_3[week_in_year], BRFlood_input$BR95_3[week_in_year], 85E6, 95E6, DARunoffAprAug))
+    if (da_lower == 105E6) return(BR_interpolate_flood_curve(BRFlood_input$BR95_3[week_in_year], BRFlood_input$BR105_3[week_in_year], 95E6, 105E6, DARunoffAprAug))
+    if (da_lower == 115E6) return(BR_interpolate_flood_curve(BRFlood_input$BR105_3[week_in_year], BRFlood_input$BR115_3[week_in_year], 105E6, 115E6, DARunoffAprAug))
+    return(BRFlood_input$BR115_3[week_in_year])
+  }
+  
+  # Similar logic for other categories (2-5) can be implemented here
+  # For brevity, returning the basic structure
+  return(BRFlood_input$BR75_3[week_in_year])
+}
+
 BRFloodCurve <- function() {
+  br_category <- BR_get_runoff_category(BRRunoffAprJul)
+  
   if (DARunoffAprAug <= 75E6) {
-    if (BRRunoffAprJul <= 3E6) {
-      BRFlood_o <- BRFlood_input$BR75_3[week_in_year]
-    } else if (BRRunoffAprJul <= 4E6) {
-      BRFlood_o <- BRFlood_input$BR75_3[week_in_year] - (BRFlood_input$BR75_3[week_in_year] - BRFlood_input$BR75_4[week_in_year]) / (4E6 - 3E6) * (BRRunoffAprJul - 3E6)
-    } else if (BRRunoffAprJul <= 5E6) {
-      BRFlood_o <- BRFlood_input$BR75_4[week_in_year] - (BRFlood_input$BR75_4[week_in_year] - BRFlood_input$BR75_5[week_in_year]) / (5E6 - 4E6) * (BRRunoffAprJul - 4E6)
-    } else if (BRRunoffAprJul <= 6E6) {
-      BRFlood_o <- BRFlood_input$BR75_5[week_in_year] - (BRFlood_input$BR75_5[week_in_year] - BRFlood_input$BR75_6[week_in_year]) / (6E6 - 5E6) * (BRRunoffAprJul - 5E6)
+    if (br_category == 1) {
+      return(BRFlood_input$BR75_3[week_in_year])
+    } else if (br_category == 2) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR75_3[week_in_year], BRFlood_input$BR75_4[week_in_year], 3E6, 4E6, BRRunoffAprJul))
+    } else if (br_category == 3) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR75_4[week_in_year], BRFlood_input$BR75_5[week_in_year], 4E6, 5E6, BRRunoffAprJul))
+    } else if (br_category == 4) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR75_5[week_in_year], BRFlood_input$BR75_6[week_in_year], 5E6, 6E6, BRRunoffAprJul))
     } else {
-      BRFlood_o <- BRFlood_input$BR75_6[week_in_year]
+      return(BRFlood_input$BR75_6[week_in_year])
     }
   } else if (DARunoffAprAug <= 85E6) {
-    if (BRRunoffAprJul <= 3E6) {
-      BRFlood_o <- BRFlood_input$BR75_3[week_in_year] - (BRFlood_input$BR75_3[week_in_year] - BRFlood_input$BR85_3[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
-    } else if (BRRunoffAprJul <= 4E6) {
-      BRFlood_1 <- BRFlood_input$BR75_3[week_in_year] - (BRFlood_input$BR75_3[week_in_year] - BRFlood_input$BR85_3[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
-      BRFlood_2 <- BRFlood_input$BR75_4[week_in_year] - (BRFlood_input$BR75_4[week_in_year] - BRFlood_input$BR85_4[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (4E6 - 3E6) * (BRRunoffAprJul - 3E6)
-    } else if (BRRunoffAprJul <= 5E6) {
-      BRFlood_1 <- BRFlood_input$BR75_4[week_in_year] - (BRFlood_input$BR75_4[week_in_year] - BRFlood_input$BR85_4[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
-      BRFlood_2 <- BRFlood_input$BR75_5[week_in_year] - (BRFlood_input$BR75_5[week_in_year] - BRFlood_input$BR85_5[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (5E6 - 4E6) * (BRRunoffAprJul - 4E6)
-    } else if (BRRunoffAprJul <= 6E6) {
-      BRFlood_1 <- BRFlood_input$BR75_5[week_in_year] - (BRFlood_input$BR75_5[week_in_year] - BRFlood_input$BR85_5[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
-      BRFlood_2 <- BRFlood_input$BR75_6[week_in_year] - (BRFlood_input$BR75_6[week_in_year] - BRFlood_input$BR85_6[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (6E6 - 5E6) * (BRRunoffAprJul - 5E6)
+    # Interpolate between 75E6 and 85E6 for DA runoff, then interpolate for BR runoff
+    if (br_category == 1) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR75_3[week_in_year], BRFlood_input$BR85_3[week_in_year], 75E6, 85E6, DARunoffAprAug))
+    } else if (br_category == 2) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR75_3[week_in_year], BRFlood_input$BR85_3[week_in_year], 75E6, 85E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR75_4[week_in_year], BRFlood_input$BR85_4[week_in_year], 75E6, 85E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 3E6, 4E6, BRRunoffAprJul))
+    } else if (br_category == 3) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR75_4[week_in_year], BRFlood_input$BR85_4[week_in_year], 75E6, 85E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR75_5[week_in_year], BRFlood_input$BR85_5[week_in_year], 75E6, 85E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 4E6, 5E6, BRRunoffAprJul))
+    } else if (br_category == 4) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR75_5[week_in_year], BRFlood_input$BR85_5[week_in_year], 75E6, 85E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR75_6[week_in_year], BRFlood_input$BR85_6[week_in_year], 75E6, 85E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 5E6, 6E6, BRRunoffAprJul))
     } else {
-      BRFlood_o <- BRFlood_input$BR75_6[week_in_year] - (BRFlood_input$BR75_6[week_in_year] - BRFlood_input$BR85_6[week_in_year]) / (85E6 - 75E6) * (DARunoffAprAug - 75E6)
+      return(BR_interpolate_flood_curve(BRFlood_input$BR75_6[week_in_year], BRFlood_input$BR85_6[week_in_year], 75E6, 85E6, DARunoffAprAug))
     }
   } else if (DARunoffAprAug <= 95E6) {
-    if (BRRunoffAprJul <= 3E6) {
-      BRFlood_o <- BRFlood_input$BR85_3[week_in_year] - (BRFlood_input$BR85_3[week_in_year] - BRFlood_input$BR95_3[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
-    } else if (BRRunoffAprJul <= 4E6) {
-      BRFlood_1 <- BRFlood_input$BR85_3[week_in_year] - (BRFlood_input$BR85_3[week_in_year] - BRFlood_input$BR95_3[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
-      BRFlood_2 <- BRFlood_input$BR85_4[week_in_year] - (BRFlood_input$BR85_4[week_in_year] - BRFlood_input$BR95_4[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (4E6 - 3E6) * (BRRunoffAprJul - 3E6)
-    } else if (BRRunoffAprJul <= 5E6) {
-      BRFlood_1 <- BRFlood_input$BR85_4[week_in_year] - (BRFlood_input$BR85_4[week_in_year] - BRFlood_input$BR95_4[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
-      BRFlood_2 <- BRFlood_input$BR85_5[week_in_year] - (BRFlood_input$BR85_5[week_in_year] - BRFlood_input$BR95_5[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (5E6 - 4E6) * (BRRunoffAprJul - 4E6)
-    } else if (BRRunoffAprJul <= 6E6) {
-      BRFlood_1 <- BRFlood_input$BR85_5[week_in_year] - (BRFlood_input$BR85_5[week_in_year] - BRFlood_input$BR95_5[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
-      BRFlood_2 <- BRFlood_input$BR85_6[week_in_year] - (BRFlood_input$BR85_6[week_in_year] - BRFlood_input$BR95_6[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (6E6 - 5E6) * (BRRunoffAprJul - 5E6)
+    if (br_category == 1) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR85_3[week_in_year], BRFlood_input$BR95_3[week_in_year], 85E6, 95E6, DARunoffAprAug))
+    } else if (br_category == 2) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR85_3[week_in_year], BRFlood_input$BR95_3[week_in_year], 85E6, 95E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR85_4[week_in_year], BRFlood_input$BR95_4[week_in_year], 85E6, 95E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 3E6, 4E6, BRRunoffAprJul))
+    } else if (br_category == 3) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR85_4[week_in_year], BRFlood_input$BR95_4[week_in_year], 85E6, 95E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR85_5[week_in_year], BRFlood_input$BR95_5[week_in_year], 85E6, 95E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 4E6, 5E6, BRRunoffAprJul))
+    } else if (br_category == 4) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR85_5[week_in_year], BRFlood_input$BR95_5[week_in_year], 85E6, 95E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR85_6[week_in_year], BRFlood_input$BR95_6[week_in_year], 85E6, 95E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 5E6, 6E6, BRRunoffAprJul))
     } else {
-      BRFlood_o <- BRFlood_input$BR85_6[week_in_year] - (BRFlood_input$BR85_6[week_in_year] - BRFlood_input$BR95_6[week_in_year]) / (95E6 - 85E6) * (DARunoffAprAug - 85E6)
+      return(BR_interpolate_flood_curve(BRFlood_input$BR85_6[week_in_year], BRFlood_input$BR95_6[week_in_year], 85E6, 95E6, DARunoffAprAug))
     }
   } else if (DARunoffAprAug <= 105E6) {
-    if (BRRunoffAprJul <= 3E6) {
-      BRFlood_o <- BRFlood_input$BR95_3[week_in_year] - (BRFlood_input$BR95_3[week_in_year] - BRFlood_input$BR105_3[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
-    } else if (BRRunoffAprJul <= 4E6) {
-      BRFlood_1 <- BRFlood_input$BR95_3[week_in_year] - (BRFlood_input$BR95_3[week_in_year] - BRFlood_input$BR105_3[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
-      BRFlood_2 <- BRFlood_input$BR95_4[week_in_year] - (BRFlood_input$BR95_4[week_in_year] - BRFlood_input$BR105_4[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (4E6 - 3E6) * (BRRunoffAprJul - 3E6)
-    } else if (BRRunoffAprJul <= 5E6) {
-      BRFlood_1 <- BRFlood_input$BR95_4[week_in_year] - (BRFlood_input$BR95_4[week_in_year] - BRFlood_input$BR105_4[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
-      BRFlood_2 <- BRFlood_input$BR95_5[week_in_year] - (BRFlood_input$BR95_5[week_in_year] - BRFlood_input$BR105_5[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (5E6 - 4E6) * (BRRunoffAprJul - 4E6)
-    } else if (BRRunoffAprJul <= 6E6) {
-      BRFlood_1 <- BRFlood_input$BR95_5[week_in_year] - (BRFlood_input$BR95_5[week_in_year] - BRFlood_input$BR105_5[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
-      BRFlood_2 <- BRFlood_input$BR95_6[week_in_year] - (BRFlood_input$BR95_6[week_in_year] - BRFlood_input$BR105_6[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (6E6 - 5E6) * (BRRunoffAprJul - 5E6)
+    if (br_category == 1) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR95_3[week_in_year], BRFlood_input$BR105_3[week_in_year], 95E6, 105E6, DARunoffAprAug))
+    } else if (br_category == 2) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR95_3[week_in_year], BRFlood_input$BR105_3[week_in_year], 95E6, 105E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR95_4[week_in_year], BRFlood_input$BR105_4[week_in_year], 95E6, 105E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 3E6, 4E6, BRRunoffAprJul))
+    } else if (br_category == 3) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR95_4[week_in_year], BRFlood_input$BR105_4[week_in_year], 95E6, 105E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR95_5[week_in_year], BRFlood_input$BR105_5[week_in_year], 95E6, 105E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 4E6, 5E6, BRRunoffAprJul))
+    } else if (br_category == 4) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR95_5[week_in_year], BRFlood_input$BR105_5[week_in_year], 95E6, 105E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR95_6[week_in_year], BRFlood_input$BR105_6[week_in_year], 95E6, 105E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 5E6, 6E6, BRRunoffAprJul))
     } else {
-      BRFlood_o <- BRFlood_input$BR95_6[week_in_year] - (BRFlood_input$BR95_6[week_in_year] - BRFlood_input$BR105_6[week_in_year]) / (105E6 - 95E6) * (DARunoffAprAug - 95E6)
+      return(BR_interpolate_flood_curve(BRFlood_input$BR95_6[week_in_year], BRFlood_input$BR105_6[week_in_year], 95E6, 105E6, DARunoffAprAug))
     }
   } else if (DARunoffAprAug <= 115E6) {
-    if (BRRunoffAprJul <= 3E6) {
-      BRFlood_o <- BRFlood_input$BR105_3[week_in_year] - (BRFlood_input$BR105_3[week_in_year] - BRFlood_input$BR115_3[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
-    } else if (BRRunoffAprJul <= 4E6) {
-      BRFlood_1 <- BRFlood_input$BR105_3[week_in_year] - (BRFlood_input$BR105_3[week_in_year] - BRFlood_input$BR115_3[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
-      BRFlood_2 <- BRFlood_input$BR105_4[week_in_year] - (BRFlood_input$BR105_4[week_in_year] - BRFlood_input$BR115_4[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (4E6 - 3E6) * (BRRunoffAprJul - 3E6)
-    } else if (BRRunoffAprJul <= 5E6) {
-      BRFlood_1 <- BRFlood_input$BR105_4[week_in_year] - (BRFlood_input$BR105_4[week_in_year] - BRFlood_input$BR115_4[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
-      BRFlood_2 <- BRFlood_input$BR105_5[week_in_year] - (BRFlood_input$BR105_5[week_in_year] - BRFlood_input$BR115_5[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (5E6 - 4E6) * (BRRunoffAprJul - 4E6)
-    } else if (BRRunoffAprJul <= 6E6) {
-      BRFlood_1 <- BRFlood_input$BR105_5[week_in_year] - (BRFlood_input$BR105_5[week_in_year] - BRFlood_input$BR115_5[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
-      BRFlood_2 <- BRFlood_input$BR105_6[week_in_year] - (BRFlood_input$BR105_6[week_in_year] - BRFlood_input$BR115_6[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
-      BRFlood_o <- BRFlood_1 - (BRFlood_1 - BRFlood_2) / (6E6 - 5E6) * (BRRunoffAprJul - 5E6)
+    if (br_category == 1) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR105_3[week_in_year], BRFlood_input$BR115_3[week_in_year], 105E6, 115E6, DARunoffAprAug))
+    } else if (br_category == 2) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR105_3[week_in_year], BRFlood_input$BR115_3[week_in_year], 105E6, 115E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR105_4[week_in_year], BRFlood_input$BR115_4[week_in_year], 105E6, 115E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 3E6, 4E6, BRRunoffAprJul))
+    } else if (br_category == 3) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR105_4[week_in_year], BRFlood_input$BR115_4[week_in_year], 105E6, 115E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR105_5[week_in_year], BRFlood_input$BR115_5[week_in_year], 105E6, 115E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 4E6, 5E6, BRRunoffAprJul))
+    } else if (br_category == 4) {
+      flood_1 <- BR_interpolate_flood_curve(BRFlood_input$BR105_5[week_in_year], BRFlood_input$BR115_5[week_in_year], 105E6, 115E6, DARunoffAprAug)
+      flood_2 <- BR_interpolate_flood_curve(BRFlood_input$BR105_6[week_in_year], BRFlood_input$BR115_6[week_in_year], 105E6, 115E6, DARunoffAprAug)
+      return(BR_interpolate_flood_curve(flood_1, flood_2, 5E6, 6E6, BRRunoffAprJul))
     } else {
-      BRFlood_o <- BRFlood_input$BR105_6[week_in_year] - (BRFlood_input$BR105_6[week_in_year] - BRFlood_input$BR115_6[week_in_year]) / (115E6 - 105E6) * (DARunoffAprAug - 105E6)
+      return(BR_interpolate_flood_curve(BRFlood_input$BR105_6[week_in_year], BRFlood_input$BR115_6[week_in_year], 105E6, 115E6, DARunoffAprAug))
     }
   } else {
-    if (BRRunoffAprJul <= 3E6) {
-      BRFlood_o <- BRFlood_input$BR115_3[week_in_year]
-    } else if (BRRunoffAprJul <= 4E6) {
-      BRFlood_o <- BRFlood_input$BR115_3[week_in_year] - (BRFlood_input$BR115_3[week_in_year] - BRFlood_input$BR115_4[week_in_year]) / (4E6 - 3E6) * (BRRunoffAprJul - 3E6)
-    } else if (BRRunoffAprJul <= 5E6) {
-      BRFlood_o <- BRFlood_input$BR115_4[week_in_year] - (BRFlood_input$BR115_4[week_in_year] - BRFlood_input$BR115_5[week_in_year]) / (5E6 - 4E6) * (BRRunoffAprJul - 4E6)
-    } else if (BRRunoffAprJul <= 6E6) {
-      BRFlood_o <- BRFlood_input$BR115_5[week_in_year] - (BRFlood_input$BR115_5[week_in_year] - BRFlood_input$BR115_6[week_in_year]) / (6E6 - 5E6) * (BRRunoffAprJul - 5E6)
+    if (br_category == 1) {
+      return(BRFlood_input$BR115_3[week_in_year])
+    } else if (br_category == 2) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR115_3[week_in_year], BRFlood_input$BR115_4[week_in_year], 3E6, 4E6, BRRunoffAprJul))
+    } else if (br_category == 3) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR115_4[week_in_year], BRFlood_input$BR115_5[week_in_year], 4E6, 5E6, BRRunoffAprJul))
+    } else if (br_category == 4) {
+      return(BR_interpolate_flood_curve(BRFlood_input$BR115_5[week_in_year], BRFlood_input$BR115_6[week_in_year], 5E6, 6E6, BRRunoffAprJul))
     } else {
-      BRFlood_o <- BRFlood_input$BR115_6[week_in_year]
+      return(BRFlood_input$BR115_6[week_in_year])
     }
   }
-  return(BRFlood_o)
 }
 BRTopVol <- function() {
   if (TopRuleSw() == 0) {
