@@ -321,7 +321,8 @@ these variables.
 
 <img src="figures/Figure4_CRB_Dams.svg" style="float: center;" width="600"/>
 
-::: {align="center"}
+::: 
+{align="center"}
 <i>Fig. 2. Incremental drainage area for each dam simulated in
 RColSim.</i>
 :::
