@@ -23,10 +23,10 @@ requirements of the CRB.
 ## Contacts:
 
 Keyvan Malek
-([keyvanmalek\@gmail.com](mailto:keyvanmalek@gmail.com){.email}),
+([keyvanmalek\@gmail.com](mailto:keyvanmalek@gmail.com)),
 Matthew Yourek
-([matthew.yourek\@wsu.edu](mailto:matthew.yourek@wsu.edu){.email}), and
-Jennifer Adam ([jcadam\@wsu.edu](mailto:jcadam@wsu.edu){.email})
+([matthew.yourek\@wsu.edu](mailto:matthew.yourek@wsu.edu)), and
+Jennifer Adam ([jcadam\@wsu.edu](mailto:jcadam@wsu.edu))
 
 ## RColSim File Structure
 
@@ -113,7 +113,7 @@ scripts/flow_to_ColSim.R "Historical_baseline" "supply_and_demand"*<br>
 
 <img src="figures/Figure2-StructureofCode.png" style="float: center;" width="700"/>
 
-::: {align="center"}
+:::
 <i>Fig. 1. Structure of the RColSim model.</i>
 :::
 
@@ -131,7 +131,7 @@ subdirectory.<br>
 *1 \> run_type=supply_and_demand*<br> *2 \> declare -a
 scr_list=(Historical_baseline bcc-csm1-1_rcp45 bcc-csm1-1_rcp85
 bcc-csm1-1_historical)*<br> *3 \> for scr_name in*
-${scr_list[@]} # loop over the scenarios_<br> _4 > do_<br> _5 > export SCR=$scr_name
+scr_list # loop over the scenarios_<br> _4 > do_<br> _5 > export SCR=$scr_name
 \$run_type \# export variables to computing node<br> *6 \> qsub --V
 VIC_to_RColSim \# submit job*<br> *7 \> done*<br>
 
@@ -194,7 +194,7 @@ Most reservoirs have designated flow targets to reduce the negative
 impact of dams on navigation or anadromous fish spawning, rearing, and
 migration. The flow targets included in RColSim are listed in Table 1.
 
-::: {align="center"}
+:::
 <i>Table 1. Flow targets included in the RColSim model.</i>
 :::
 
@@ -321,8 +321,7 @@ these variables.
 
 <img src="figures/Figure4_CRB_Dams.svg" style="float: center;" width="600"/>
 
-::: 
-{align="center"}
+:::
 <i>Fig. 2. Incremental drainage area for each dam simulated in
 RColSim.</i>
 :::
@@ -422,4 +421,5 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
 FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </p>
+
 
